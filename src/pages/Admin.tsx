@@ -58,8 +58,8 @@ export default function Admin() {
     <>
       <PageHero
         eyebrow="Admin · CRM placeholder"
-        title="Atlas leads dashboard."
-        subtitle="A local view of leads captured by the Atlas website. Replace with the production CRM when ready."
+        title="Pistachio leads dashboard."
+        subtitle="A local view of leads captured by the Pistachio website. Replace with the production CRM when ready."
       />
 
       <section className="section">
