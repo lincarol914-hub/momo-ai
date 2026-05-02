@@ -116,7 +116,7 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="bg-navy-deep text-paper mt-24">
+    <footer className="bg-navy-deep text-paper">
       <div className="container-atlas py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
           <div className="col-span-2">
