@@ -47,7 +47,7 @@ export default function Investors() {
       <PageHero
         eyebrow="For Investors"
         title="Building the AI-native consolidation platform for commercial insurance."
-        subtitle="Atlas combines broker acquisition, AI operating infrastructure, commercial insurance distribution, and a pathway to MGA economics."
+        subtitle="Pistachio combines broker acquisition, AI operating infrastructure, commercial insurance distribution, and a pathway to MGA economics."
       />
 
       <section className="section">
@@ -88,7 +88,7 @@ export default function Investors() {
 
       <section className="section">
         <div className="container-atlas">
-          <SectionHeader eyebrow="Three operating systems" title="The Atlas platform." />
+          <SectionHeader eyebrow="Three operating systems" title="The Pistachio platform." />
           <div className="mt-12 grid md:grid-cols-3 gap-5">
             {[
               { tag: "Acquire OS", desc: "Sourcing, diligence, valuation and integration of brokers and MGAs." },
@@ -96,7 +96,7 @@ export default function Investors() {
               { tag: "Growth OS", desc: "Prospecting, partnerships and qualified insurance opportunities." },
             ].map((s) => (
               <div key={s.tag} className="rounded-xl border border-border bg-card p-7">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-accent font-semibold">Atlas</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-accent font-semibold">Pistachio</div>
                 <div className="mt-2 font-display text-2xl text-ink">{s.tag}</div>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
               </div>
@@ -118,7 +118,7 @@ export default function Investors() {
           <div>
             <SectionHeader eyebrow="Long-term vision" title="A new operating company for insurance." />
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              Atlas aims to become the AI-native operating company for commercial insurance distribution,
+              Pistachio aims to become the AI-native operating company for commercial insurance distribution,
               broker consolidation, and specialist MGA infrastructure.
             </p>
           </div>
@@ -130,7 +130,7 @@ export default function Investors() {
           <div className="lg:col-span-5">
             <Eyebrow>Investor materials</Eyebrow>
             <h2 className="mt-4 font-display text-4xl text-ink">Request investor materials.</h2>
-            <p className="mt-4 text-muted-foreground">Atlas shares materials with serious investors only. We'll respond within two working days.</p>
+            <p className="mt-4 text-muted-foreground">Pistachio shares materials with serious investors only. We'll respond within two working days.</p>
           </div>
           <div className="lg:col-span-7">
             {done ? (

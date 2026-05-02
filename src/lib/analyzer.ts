@@ -218,10 +218,10 @@ export function generateReport(i: AnalysisInput): Report {
   // ----- NEXT STEPS
   const nextSteps = [
     "Upload existing policy documents for AI policy checking.",
-    "Complete the detailed Atlas intake form.",
+    "Complete the detailed Pistachio intake form.",
     "Review insurance requirements in your top customer contracts.",
     "Compare current cover against the risks identified above.",
-    "Speak with a qualified insurance professional on the Atlas team.",
+    "Speak with a qualified insurance professional on the Pistachio team.",
     i.renewalDate
       ? `Prepare market submission ahead of your renewal (${i.renewalDate}).`
       : "Confirm renewal dates so submissions can be prepared in advance.",

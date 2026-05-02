@@ -4,62 +4,62 @@
 
 @layer base {
   :root {
-    /* Atlas brand — deep navy, paper white, muted greys, copper accent */
-    --background: 40 33% 98%;
-    --foreground: 222 47% 11%;
+    /* Pistachio AI brand — pistachio green, cream, charcoal */
+    --background: 60 20% 98%;
+    --foreground: 160 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 160 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 160 25% 10%;
 
-    /* Atlas Navy */
-    --primary: 222 47% 11%;
-    --primary-foreground: 40 33% 98%;
+    /* Charcoal primary */
+    --primary: 160 25% 10%;
+    --primary-foreground: 75 50% 92%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 75 35% 94%;
+    --secondary-foreground: 160 25% 10%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 75 20% 95%;
+    --muted-foreground: 160 8% 40%;
 
-    /* Copper accent */
-    --accent: 22 78% 52%;
-    --accent-foreground: 40 33% 98%;
+    /* Pistachio accent */
+    --accent: 82 45% 55%;
+    --accent-foreground: 160 25% 10%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 40 33% 98%;
+    --destructive-foreground: 60 20% 98%;
 
     --success: 152 56% 35%;
     --warning: 38 92% 50%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 222 47% 11%;
+    --border: 75 15% 88%;
+    --input: 75 15% 88%;
+    --ring: 82 45% 55%;
 
-    --radius: 0.625rem;
+    --radius: 0.875rem;
 
-    /* Surfaces */
-    --navy: 222 47% 11%;
-    --navy-deep: 222 50% 8%;
-    --navy-soft: 222 30% 18%;
-    --paper: 40 33% 98%;
-    --ink: 222 47% 11%;
+    /* Surfaces (kept names for compatibility) */
+    --navy: 160 25% 10%;
+    --navy-deep: 160 30% 7%;
+    --navy-soft: 160 18% 18%;
+    --paper: 75 50% 92%;
+    --ink: 160 25% 10%;
 
     /* Gradients */
-    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, hsl(222 50% 18% / 1) 0%, hsl(222 50% 8%) 60%);
-    --gradient-accent: linear-gradient(135deg, hsl(22 78% 52%), hsl(14 84% 56%));
-    --gradient-paper: linear-gradient(180deg, hsl(40 33% 98%), hsl(40 25% 95%));
+    --gradient-hero: radial-gradient(ellipse 90% 70% at 50% 0%, hsl(160 30% 14%) 0%, hsl(160 30% 7%) 65%);
+    --gradient-accent: linear-gradient(135deg, hsl(82 50% 60%), hsl(72 55% 65%));
+    --gradient-paper: linear-gradient(180deg, hsl(75 40% 96%), hsl(75 30% 93%));
 
     /* Shadows */
-    --shadow-elev: 0 1px 2px hsl(222 47% 11% / 0.04), 0 8px 24px -8px hsl(222 47% 11% / 0.12);
-    --shadow-card: 0 1px 0 hsl(222 47% 11% / 0.04), 0 1px 3px hsl(222 47% 11% / 0.06);
-    --shadow-glow: 0 0 0 1px hsl(22 78% 52% / 0.2), 0 12px 40px -12px hsl(22 78% 52% / 0.35);
+    --shadow-elev: 0 1px 2px hsl(160 25% 10% / 0.04), 0 8px 24px -8px hsl(160 25% 10% / 0.12);
+    --shadow-card: 0 1px 0 hsl(160 25% 10% / 0.04), 0 1px 3px hsl(160 25% 10% / 0.06);
+    --shadow-glow: 0 0 0 1px hsl(82 45% 55% / 0.25), 0 12px 40px -12px hsl(82 45% 55% / 0.45);
 
     /* Type */
     --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+    --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -75,23 +75,23 @@
   }
 
   .dark {
-    --background: 222 50% 8%;
-    --foreground: 40 33% 98%;
-    --card: 222 47% 11%;
-    --card-foreground: 40 33% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 40 33% 98%;
-    --primary: 40 33% 98%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 40 33% 98%;
-    --muted: 222 30% 18%;
-    --muted-foreground: 220 9% 65%;
-    --accent: 22 78% 52%;
-    --accent-foreground: 40 33% 98%;
-    --border: 222 30% 22%;
-    --input: 222 30% 22%;
-    --ring: 22 78% 52%;
+    --background: 160 30% 7%;
+    --foreground: 75 50% 92%;
+    --card: 160 25% 10%;
+    --card-foreground: 75 50% 92%;
+    --popover: 160 25% 10%;
+    --popover-foreground: 75 50% 92%;
+    --primary: 75 50% 92%;
+    --primary-foreground: 160 25% 10%;
+    --secondary: 160 18% 18%;
+    --secondary-foreground: 75 50% 92%;
+    --muted: 160 18% 18%;
+    --muted-foreground: 75 15% 70%;
+    --accent: 82 45% 55%;
+    --accent-foreground: 160 25% 10%;
+    --border: 160 18% 22%;
+    --input: 160 18% 22%;
+    --ring: 82 45% 55%;
   }
 }
 
@@ -103,7 +103,7 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.025em; font-weight: 500; }
   .font-display { font-family: var(--font-display); }
   .font-mono { font-family: var(--font-mono); }
 
