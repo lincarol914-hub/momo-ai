@@ -137,7 +137,7 @@ export default function Home() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="pb-24 pt-4">
+      <section className="pb-20 pt-4">
         <div className="container-atlas">
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-16 relative overflow-hidden">
             <div className="absolute inset-0 bg-grid opacity-30" />
