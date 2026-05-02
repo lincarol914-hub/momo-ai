@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui"],
-        display: ["Fraunces", "ui-serif", "Georgia"],
+        display: ["Space Grotesk", "Inter", "ui-sans-serif", "system-ui"],
         mono: ["JetBrains Mono", "ui-monospace"],
       },
       colors: {
