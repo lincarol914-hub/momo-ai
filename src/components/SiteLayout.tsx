@@ -56,15 +56,15 @@ export function Header() {
     )}>
       <div className="container-atlas flex items-center justify-between h-16 lg:h-18">
         <AtlasLogo />
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-0.5">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               end={n.to === "/"}
               className={({ isActive }) => cn(
-                "px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                isActive ? "text-ink" : "text-muted-foreground hover:text-ink"
+                "px-2.5 py-2 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap",
+                isActive ? "text-ink bg-secondary" : "text-muted-foreground hover:text-ink"
               )}
             >
               {n.label}
