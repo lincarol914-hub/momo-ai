@@ -12,7 +12,7 @@ export default function Businesses() {
       <PageHero
         eyebrow="For Businesses"
         title="Commercial insurance made clearer."
-        subtitle="Pistachio helps businesses understand their risks, prepare better insurance information, compare options, and manage policies more efficiently."
+        subtitle="Wombat helps businesses understand their risks, prepare better insurance information, compare options, and manage policies more efficiently."
       />
 
       <section className="section">
@@ -41,7 +41,7 @@ export default function Businesses() {
 
       <section className="section bg-secondary/40">
         <div className="container-atlas">
-          <SectionHeader eyebrow="What Pistachio helps with" title="A clearer path through commercial insurance." />
+          <SectionHeader eyebrow="What Wombat helps with" title="A clearer path through commercial insurance." />
           <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <FeatureCard icon={FileSearch} title="Insurance needs analysis">Initial AI-assisted view of your exposures and likely cover.</FeatureCard>
             <FeatureCard icon={ShieldCheck} title="Risk profile creation">A structured profile of your business risks and controls.</FeatureCard>
@@ -82,7 +82,7 @@ export default function Businesses() {
 
       <section className="section bg-secondary/40">
         <div className="container-atlas">
-          <SectionHeader eyebrow="Products we can help review" title="Cover Pistachio can help you scope and compare." />
+          <SectionHeader eyebrow="Products we can help review" title="Cover Wombat can help you scope and compare." />
           <div className="mt-10 flex flex-wrap gap-2">
             {[
               "Employers' liability", "Public liability", "Professional indemnity", "Cyber",
