@@ -5,13 +5,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/insurance-analysis", label: "Insurance Analysis" },
+  { to: "/insurance-analysis", label: "Analysis" },
   { to: "/businesses", label: "Businesses" },
-  { to: "/broker-owners", label: "Broker Owners" },
+  { to: "/broker-owners", label: "Brokers" },
   { to: "/partners", label: "Partners" },
-  { to: "/platform", label: "Platform" },
   { to: "/investors", label: "Investors" },
+  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -19,18 +18,15 @@ export function AtlasLogo({ className, dark = false }: { className?: string; dar
   return (
     <Link to="/" className={cn("flex items-center gap-2.5 group", className)}>
       <div className={cn(
-        "relative h-8 w-8 rounded-lg flex items-center justify-center overflow-hidden",
-        dark ? "bg-accent text-navy" : "bg-accent text-ink"
+        "relative h-9 w-9 rounded-xl flex items-center justify-center overflow-hidden ring-1 transition-transform group-hover:scale-105",
+        dark ? "bg-accent text-paper ring-paper/10" : "bg-ink text-paper ring-ink/10"
       )}>
-        <span className="font-display font-bold text-[15px] leading-none">P</span>
-        <span className="absolute -right-0.5 -bottom-0.5 h-1.5 w-1.5 rounded-full bg-paper" />
+        <span className="font-display font-bold text-[16px] leading-none tracking-tight">w</span>
+        <span className="absolute -right-1 -bottom-1 h-2 w-2 rounded-full bg-accent ring-2 ring-background" />
       </div>
       <div className="leading-none">
         <div className={cn("font-display text-[18px] font-semibold tracking-tight", dark ? "text-paper" : "text-ink")}>
-          Pistachio<span className="text-accent">.</span>
-        </div>
-        <div className={cn("text-[9px] uppercase tracking-[0.22em] mt-1 font-medium", dark ? "text-paper/55" : "text-muted-foreground")}>
-          AI · Insurance
+          wombat<span className="text-accent">.</span>ai
         </div>
       </div>
     </Link>
@@ -122,27 +118,25 @@ export function Footer() {
           <div className="col-span-2">
             <AtlasLogo dark />
             <p className="mt-5 text-sm text-paper/60 max-w-xs leading-relaxed">
-              The AI-native insurance platform for modern businesses. Insurance, rebuilt around AI.
+              Smarter business insurance. Clearer cover, fairer prices, faster decisions.
             </p>
           </div>
-          <FooterCol title="Product" links={[
-            { to: "/insurance-analysis", label: "Insurance Analysis" },
-            { to: "/platform", label: "Platform" },
+          <FooterCol title="Get cover" links={[
+            { to: "/insurance-analysis", label: "Free Analysis" },
             { to: "/businesses", label: "For Businesses" },
           ]} />
           <FooterCol title="Company" links={[
             { to: "/about", label: "About" },
-            { to: "/broker-owners", label: "Broker Owners" },
-            { to: "/partners", label: "Insurance Partners" },
+            { to: "/broker-owners", label: "Brokers" },
+            { to: "/partners", label: "Partners" },
             { to: "/investors", label: "Investors" },
           ]} />
           <FooterCol title="Contact" links={[
             { to: "/contact", label: "Contact" },
-            { to: "/admin", label: "Admin" },
           ]} />
         </div>
         <div className="hairline border-paper/10 mt-14 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-paper/50">
-          <div>© {new Date().getFullYear()} Pistachio AI. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} Wombat AI. All rights reserved.</div>
           <div className="max-w-2xl leading-relaxed">
             Information on this website is general in nature and does not constitute insurance advice.
             Cover availability depends on insurer appetite, underwriting, jurisdiction and policy terms.

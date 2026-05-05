@@ -5,9 +5,9 @@ export default function About() {
   return (
     <>
       <PageHero
-        eyebrow="About Pistachio"
+        eyebrow="About Wombat"
         title="Rebuilding commercial insurance around better workflows, better data, and better operating leverage."
-        subtitle="Pistachio is building an AI-native insurance platform focused on commercial insurance distribution, broker transformation, and specialist risk infrastructure."
+        subtitle="Wombat is building an AI-native insurance platform focused on commercial insurance distribution, broker transformation, and specialist risk infrastructure."
       />
 
       <section className="section">
@@ -24,7 +24,7 @@ export default function About() {
               underwriters, operators and clients better tools.
             </p>
             <p>
-              Pistachio combines acquisition-led growth with AI-enabled operations to create a more scalable,
+              Wombat combines acquisition-led growth with AI-enabled operations to create a more scalable,
               specialist insurance platform — one that respects the regulated, relationship-driven nature of
               the industry while modernising its operating model.
             </p>
@@ -52,7 +52,7 @@ export default function About() {
         <div className="container-atlas">
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-14 flex flex-col md:flex-row gap-8 justify-between md:items-end">
             <div>
-              <Eyebrow dark>Talk to Pistachio</Eyebrow>
+              <Eyebrow dark>Talk to Wombat</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Whatever brings you here, we'd like to hear from you.</h2>
             </div>
             <CTARow dark secondaryLabel="Contact" />
