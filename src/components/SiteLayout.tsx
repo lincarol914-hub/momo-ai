@@ -11,21 +11,40 @@ const NAV = [
   { to: "/contact", label: "Contact" },
 ];
 
-export function AtlasLogo({ className, dark = false }: { className?: string; dark?: boolean }) {
+export function AtlasLogo({
+  className,
+  dark = false,
+  size = "header",
+}: {
+  className?: string;
+  dark?: boolean;
+  size?: "header" | "footer";
+}) {
+  const dims = size === "footer" ? "h-14" : "h-10";
   return (
-    <Link to="/" className={cn("flex items-center gap-2.5 group", className)}>
-      <div className={cn(
-        "relative h-9 w-9 rounded-xl flex items-center justify-center overflow-hidden ring-1 transition-transform group-hover:scale-105",
-        dark ? "bg-accent text-paper ring-paper/10" : "bg-ink text-paper ring-ink/10"
-      )}>
-        <span className="font-display font-bold text-[16px] leading-none tracking-tight">m</span>
-        <span className="absolute -right-1 -bottom-1 h-2 w-2 rounded-full bg-accent ring-2 ring-background" />
-      </div>
-      <div className="leading-none">
-        <div className={cn("font-display text-[18px] font-semibold tracking-tight", dark ? "text-paper" : "text-ink")}>
-          momo<span className="text-accent">.</span>ai
-        </div>
-      </div>
+    <Link to="/" className={cn("inline-flex items-center group", className)} aria-label="Momo AI home">
+      <span
+        className={cn(
+          "inline-flex items-center justify-center rounded-2xl overflow-hidden transition-transform group-hover:scale-105",
+          dark ? "bg-paper p-1.5 ring-1 ring-paper/20 shadow-elev" : ""
+        )}
+      >
+        <img
+          src="/momo-logo.png"
+          alt="Momo AI"
+          className={cn(dims, "w-auto select-none")}
+          draggable={false}
+          onError={(e) => {
+            // Fallback to wordmark if the asset isn't deployed yet.
+            const el = e.currentTarget;
+            el.style.display = "none";
+            el.parentElement?.insertAdjacentHTML(
+              "beforeend",
+              `<span class="font-display text-xl font-semibold tracking-tight ${dark ? "text-ink" : "text-ink"}">momo<span class="text-accent">.</span>ai</span>`
+            );
+          }}
+        />
+      </span>
     </Link>
   );
 }
@@ -113,7 +132,7 @@ export function Footer() {
       <div className="container-atlas py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2">
-            <AtlasLogo dark />
+            <AtlasLogo dark size="footer" />
             <p className="mt-5 text-sm text-paper/60 max-w-xs leading-relaxed">
               Smarter business insurance. Clearer cover, fairer prices, faster decisions.
             </p>
