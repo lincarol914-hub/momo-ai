@@ -29,6 +29,7 @@ from pricing_engine import (
     ModelBundle,
     load_or_train,
     price_policy,
+    quote_partial,
     translate_uk_commercial,
 )
 
@@ -51,19 +52,26 @@ def _bundle() -> ModelBundle:
 
 
 class PropertyRequest(BaseModel):
+    """Property fields for a quote — all optional.
+
+    Anything you don't send falls through to the engine's UK SME defaults
+    (£500k sum insured, age 25, masonry, no sprinklers, 1 floor, 0 prior
+    claims) and the confidence band widens to reflect the missing inputs.
+    """
+
     postcode: Optional[str] = None
     sic_code: Optional[str] = None
-    sum_insured: float = Field(..., gt=0)
-    building_age: int = Field(0, ge=0, le=300)
-    construction: str = "brick"
-    sprinklers: bool = False
-    floors: int = Field(1, ge=1, le=200)
-    prior_claims: int = Field(0, ge=0)
+    sum_insured: Optional[float] = Field(default=None, gt=0)
+    building_age: Optional[int] = Field(default=None, ge=0, le=300)
+    construction: Optional[str] = None
+    sprinklers: Optional[bool] = None
+    floors: Optional[int] = Field(default=None, ge=1, le=200)
+    prior_claims: Optional[int] = Field(default=None, ge=0)
 
 
 class CompanyQuoteRequest(BaseModel):
     name_or_number: str
-    property: PropertyRequest
+    property: Optional[PropertyRequest] = None
 
 
 class QuoteResponse(BaseModel):
@@ -71,6 +79,8 @@ class QuoteResponse(BaseModel):
     gross_premium: float
     confidence_low: float
     confidence_high: float
+    confidence: str
+    completeness: Dict[str, Any]
     loading_breakdown: Dict[str, Any]
     company: Optional[Dict[str, Any]] = None
     model_source: str
@@ -84,11 +94,18 @@ def _to_response(quote: Dict[str, Any], company: Optional[Dict[str, Any]] = None
         gross_premium=quote["gross_premium"],
         confidence_low=p10,
         confidence_high=p90,
+        confidence=quote.get("confidence", "high"),
+        completeness=quote.get("completeness", {}),
         loading_breakdown=quote["loading_breakdown"],
         company=company,
         model_source=quote["model_source"],
         trained_at=quote["trained_at"],
     )
+
+
+def _filter_provided(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Drop None values so the engine treats them as missing."""
+    return {k: v for k, v in payload.items() if v is not None}
 
 
 @app.get("/health")
@@ -107,8 +124,7 @@ def get_company(name_or_number: str) -> Dict[str, Any]:
 @app.post("/quote", response_model=QuoteResponse)
 def post_quote(req: PropertyRequest) -> QuoteResponse:
     bundle = _bundle()
-    translated = translate_uk_commercial(req.model_dump(), bundle=bundle)
-    quote = price_policy(translated["features"], bundle=bundle)
+    quote = quote_partial(_filter_provided(req.model_dump()), bundle=bundle)
     return _to_response(quote)
 
 
@@ -116,10 +132,9 @@ def post_quote(req: PropertyRequest) -> QuoteResponse:
 def post_quote_from_company(req: CompanyQuoteRequest) -> QuoteResponse:
     co = enrich_company(req.name_or_number) or {}
     bundle = _bundle()
-    payload = req.property.model_dump()
+    payload = _filter_provided(req.property.model_dump() if req.property else {})
     payload.setdefault("postcode", co.get("postcode"))
-    if not payload.get("sic_code"):
-        payload["sic_code"] = (co.get("sic_codes") or [None])[0]
-    translated = translate_uk_commercial(payload, bundle=bundle)
-    quote = price_policy(translated["features"], bundle=bundle)
+    if not payload.get("sic_code") and co.get("sic_codes"):
+        payload["sic_code"] = co["sic_codes"][0]
+    quote = quote_partial(payload, bundle=bundle)
     return _to_response(quote, company=co or None)

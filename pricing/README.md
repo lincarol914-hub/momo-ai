@@ -138,6 +138,47 @@ curl -X POST http://localhost:8001/quote/from-company \
 curl http://localhost:8001/company/GREGGS%20PLC
 ```
 
+## Partial-info pricing
+
+You don't need to know everything about a building to get a quote. Send
+whatever you have and the engine fills the rest from sensible UK SME
+defaults, widening the confidence band as more inputs go missing.
+
+| Inputs supplied (of 8) | Confidence | Spread on top of bootstrap |
+| --- | --- | --- |
+| 6 or more | high | ±5% |
+| 3 - 5 | medium | ±18% |
+| 0 - 2 | low | ±40% |
+
+The returned `completeness` block on every quote lists exactly which
+fields you provided, which were defaulted, and at what level.
+
+```bash
+# Only a sum insured — everything else defaulted.
+curl -X POST http://localhost:8001/quote \
+  -H 'content-type: application/json' \
+  -d '{"sum_insured": 500000}'
+
+# Only a Companies House number — postcode + SIC come from CH,
+# property fields all default.
+curl -X POST http://localhost:8001/quote/from-company \
+  -H 'content-type: application/json' \
+  -d '{"name_or_number": "GREGGS PLC"}'
+```
+
+Python equivalents:
+
+```python
+from pricing_engine import quote_partial, quote_from_company
+
+# All optional
+quote_from_company("GREGGS PLC", sum_insured=500_000)
+quote_from_company("12345678")  # no property data at all
+
+# Or call quote_partial directly with whatever dict you have:
+quote_partial({"sum_insured": 500_000, "construction": "brick", "sprinklers": True})
+```
+
 ## Wire it into the Momo React app
 
 The React `Autopilot` flow already mocks the pricing engine in

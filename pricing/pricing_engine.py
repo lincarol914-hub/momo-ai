@@ -55,6 +55,27 @@ PRIOR_CLAIMS_CAP = 5
 N_BOOTSTRAP = 100
 DEFAULT_GAMMA_SHAPE = 2.0     # fallback if shape can't be estimated
 
+# Confidence -> extra spread on the price band when inputs are partial.
+# Matches the React side's SPREAD constants in src/lib/pricing.ts so the
+# customer experience is the same whether the quote comes from the in-
+# browser mock or this service.
+CONFIDENCE_SPREAD: Dict[str, float] = {"low": 0.40, "medium": 0.18, "high": 0.05}
+
+# Defaults used when a property field is not supplied — chosen to be
+# plausible UK SME midpoints, not aggressive in either direction.
+PARTIAL_DEFAULTS: Dict[str, Any] = {
+    "sum_insured": 500_000.0,
+    "building_age": 25,
+    "construction": "masonry",
+    "sprinklers": False,
+    "floors": 1,
+    "prior_claims": 0,
+}
+
+# Fields we look at when assessing how much info we have.
+PROPERTY_FIELDS = list(PARTIAL_DEFAULTS.keys())
+ENRICHMENT_FIELDS = ["postcode", "sic_code"]
+
 # Feature schema vocab — kept stable so we can one-hot deterministically.
 CONSTRUCTION_LEVELS = ["masonry", "timber", "steel", "mixed"]
 OCCUPANCY_LEVELS = ["residential", "commercial", "mixed"]
@@ -637,6 +658,7 @@ def _bootstrap_loss(
 def price_policy(
     features: Dict[str, Any],
     bundle: Optional[ModelBundle] = None,
+    confidence: str = "high",
 ) -> Dict[str, Any]:
     """Quote a single risk from a unified-feature dict.
 
@@ -644,8 +666,14 @@ def price_policy(
     categorical levels by setting the appropriate one-hot column (e.g.
     ``construction_masonry=1``).
 
+    ``confidence`` controls how much the price band widens to reflect
+    uncertainty from missing inputs. ``"high"`` keeps the band as the raw
+    bootstrap p10-p90; ``"medium"`` and ``"low"`` blend in an extra spread
+    (±18% / ±40%) on top of the bootstrap so partial-info quotes don't
+    pretend to be more precise than they are.
+
     Returns a dict with ``expected_loss``, ``gross_premium``,
-    ``loading_breakdown``, ``confidence_band`` (p10, p90 of gross premium),
+    ``loading_breakdown``, ``confidence_band`` (low, high gross premium),
     plus the underlying frequency and severity predictions.
     """
     bundle = bundle or load_or_train()
@@ -667,12 +695,23 @@ def price_policy(
         "profit_load": gross_premium * PROFIT_LOAD,
     }
 
+    # Process variance from the compound Poisson-Gamma bootstrap.
     sims = _bootstrap_loss(lam, mu_sev, bundle.gamma_shape, n=N_BOOTSTRAP)
-    p10_loss = float(np.quantile(sims, 0.10))
-    p90_loss = float(np.quantile(sims, 0.90))
+    process_low = float(np.quantile(sims, 0.10))
+    process_high = float(np.quantile(sims, 0.90))
+
+    # Parameter uncertainty from missing inputs.
+    spread = CONFIDENCE_SPREAD.get(confidence, 0.05)
+    param_low = expected_loss * (1.0 - spread)
+    param_high = expected_loss * (1.0 + spread)
+
+    # Combined band: take the widest of the two on each side, convert
+    # to premium space.
+    band_low_loss = max(0.0, min(process_low, param_low))
+    band_high_loss = max(process_high, param_high)
     confidence_band = (
-        p10_loss / max(TARGET_LOSS_RATIO, 1e-6),
-        p90_loss / max(TARGET_LOSS_RATIO, 1e-6),
+        band_low_loss / max(TARGET_LOSS_RATIO, 1e-6),
+        band_high_loss / max(TARGET_LOSS_RATIO, 1e-6),
     )
 
     return {
@@ -680,11 +719,40 @@ def price_policy(
         "gross_premium": gross_premium,
         "loading_breakdown": loading_breakdown,
         "confidence_band": confidence_band,
+        "confidence": confidence,
         "frequency": lam,
         "severity": mu_sev,
         "model_source": bundle.source,
         "trained_at": bundle.trained_at,
     }
+
+
+def quote_partial(
+    company: Dict[str, Any],
+    bundle: Optional[ModelBundle] = None,
+) -> Dict[str, Any]:
+    """Price a policy with whatever fields are available.
+
+    Auto-detects how complete the input is via :func:`assess_completeness`,
+    fills missing fields from :data:`PARTIAL_DEFAULTS`, and widens the
+    confidence band accordingly. Output is the same shape as
+    :func:`price_policy` plus a ``completeness`` block listing what was
+    provided, what was defaulted, and the resulting confidence level.
+    """
+    bundle = bundle or load_or_train()
+    translated = translate_uk_commercial(company, bundle=bundle)
+    ctx = translated["context"]
+    quote = price_policy(
+        translated["features"], bundle=bundle, confidence=ctx["confidence"]
+    )
+    quote["completeness"] = {
+        "level": ctx["confidence"],
+        "provided_fields": ctx["provided_fields"],
+        "missing_fields": ctx["missing_fields"],
+        "defaults_used": ctx["defaults_used"],
+    }
+    quote["context"] = ctx
+    return quote
 
 
 # --------------------------------------------------------------------------- #
@@ -706,23 +774,73 @@ def _sic_to_subtype(sic_code: Optional[str]) -> str:
     return SIC_PREFIX_TO_SUBTYPE.get(str(sic_code).strip()[:2], "commercial/other")
 
 
+def _is_provided(company: Dict[str, Any], key: str) -> bool:
+    """True if a field was meaningfully supplied (not None / empty / zero)."""
+    v = company.get(key)
+    if v is None:
+        return False
+    if isinstance(v, str) and not v.strip():
+        return False
+    if key in {"sum_insured", "building_age", "floors"}:
+        try:
+            return float(v) > 0
+        except (TypeError, ValueError):
+            return False
+    return True
+
+
+def assess_completeness(company: Dict[str, Any]) -> Tuple[str, List[str], List[str]]:
+    """Classify how much we know about the risk.
+
+    Returns ``(confidence, provided_fields, missing_fields)`` where
+    ``confidence`` is one of ``"low" / "medium" / "high"``.
+    """
+    provided: List[str] = []
+    missing: List[str] = []
+    for k in PROPERTY_FIELDS:
+        (provided if _is_provided(company, k) else missing).append(k)
+    for k in ENRICHMENT_FIELDS:
+        if _is_provided(company, k):
+            provided.append(k)
+        # Enrichment fields aren't counted as "missing" — they're nice to have.
+
+    score = len(provided) / float(len(PROPERTY_FIELDS) + len(ENRICHMENT_FIELDS))
+    if score >= 0.75:
+        confidence = "high"
+    elif score >= 0.40:
+        confidence = "medium"
+    else:
+        confidence = "low"
+    return confidence, provided, missing
+
+
 def translate_uk_commercial(
     company: Dict[str, Any],
     bundle: Optional[ModelBundle] = None,
 ) -> Dict[str, Any]:
     """Translate a UK SME company dict onto the unified feature schema.
 
-    Expected keys (all optional — sensible defaults applied):
+    Every field is optional. Missing fields fall back to plausible UK SME
+    midpoints from :data:`PARTIAL_DEFAULTS`. The returned ``context``
+    records what was actually provided and what was defaulted, plus the
+    overall ``confidence`` level for the resulting quote.
+
+    Expected keys (all optional):
         postcode, sic_code, sum_insured, building_age, construction,
         sprinklers, floors, prior_claims, turnover, employees
     """
     bundle = bundle or load_or_train()
-    sum_insured = float(company.get("sum_insured") or 0.0)
-    building_age = int(company.get("building_age") or 0)
-    construction = _normalise_construction(company.get("construction"))
-    sprinklers = bool(company.get("sprinklers", False))
-    floors = int(company.get("floors") or 0)
-    prior_claims = int(company.get("prior_claims") or 0)
+    confidence, provided, missing = assess_completeness(company)
+
+    # Apply defaults for anything missing.
+    filled = {**PARTIAL_DEFAULTS, **{k: company[k] for k in PROPERTY_FIELDS if _is_provided(company, k)}}
+
+    sum_insured = float(filled["sum_insured"])
+    building_age = int(filled["building_age"])
+    construction = _normalise_construction(filled["construction"])
+    sprinklers = bool(filled["sprinklers"])
+    floors = int(filled["floors"])
+    prior_claims = int(filled["prior_claims"])
     sic_code = str(company.get("sic_code") or "")
     postcode = str(company.get("postcode") or "")
 
@@ -750,6 +868,10 @@ def translate_uk_commercial(
             "postcode_area": postcode_area,
             "location_risk_quintile": location_risk,
             "construction_normalised": construction,
+            "confidence": confidence,
+            "provided_fields": provided,
+            "missing_fields": missing,
+            "defaults_used": {k: PARTIAL_DEFAULTS[k] for k in missing},
         },
     }
 
@@ -761,6 +883,13 @@ def _gbp(x: float) -> str:
     return f"£{x:,.0f}"
 
 
+def _display_value(inputs: Dict[str, Any], key: str, defaults_used: Dict[str, Any]) -> str:
+    """Show the value as-is, or mark it as a fallback default."""
+    if key in defaults_used:
+        return f"{inputs[key]} (default)"
+    return str(inputs[key])
+
+
 def _format_quote(
     company_meta: Dict[str, Any],
     inputs: Dict[str, Any],
@@ -769,6 +898,15 @@ def _format_quote(
     sep = "=" * 50
     dash = "-" * 50
     p10, p90 = quote["confidence_band"]
+    completeness = quote.get("completeness", {})
+    defaults_used = completeness.get("defaults_used", {})
+    level = completeness.get("level", quote.get("confidence", "high"))
+    provided = len(completeness.get("provided_fields", []))
+    total = len(PROPERTY_FIELDS) + len(ENRICHMENT_FIELDS)
+
+    sum_insured_str = _gbp(inputs["sum_insured"]) + (
+        " (default)" if "sum_insured" in defaults_used else ""
+    )
     return "\n".join(
         [
             sep,
@@ -781,15 +919,16 @@ def _format_quote(
             f"Postcode:        {company_meta.get('postcode') or '(unknown)'}",
             f"Company Age:     {company_meta.get('company_age_years') if company_meta.get('company_age_years') is not None else '(unknown)'} years",
             dash,
-            f"Sum Insured:     {_gbp(inputs['sum_insured'])}",
-            f"Building Age:    {inputs['building_age']} years",
-            f"Construction:    {inputs['construction']}",
-            f"Sprinklers:      {'Yes' if inputs['sprinklers'] else 'No'}",
-            f"Prior Claims:    {inputs['prior_claims']}",
+            f"Sum Insured:     {sum_insured_str}",
+            f"Building Age:    {_display_value(inputs, 'building_age', defaults_used)} years",
+            f"Construction:    {_display_value(inputs, 'construction', defaults_used)}",
+            f"Sprinklers:      {'Yes' if inputs['sprinklers'] else 'No'}{' (default)' if 'sprinklers' in defaults_used else ''}",
+            f"Floors:          {_display_value(inputs, 'floors', defaults_used)}",
+            f"Prior Claims:    {_display_value(inputs, 'prior_claims', defaults_used)}",
             dash,
             f"Expected Loss:   {_gbp(quote['expected_loss'])}",
             f"Gross Premium:   {_gbp(quote['gross_premium'])}",
-            f"Confidence:      {_gbp(p10)} - {_gbp(p90)}",
+            f"Confidence:      {_gbp(p10)} - {_gbp(p90)}  ({level}, {provided}/{total} fields)",
             f"Loss Ratio Tgt:  {int(TARGET_LOSS_RATIO * 100)}%",
             dash,
             f"DATA SOURCE: {quote['model_source']} model | trained {quote['trained_at']}",
@@ -800,29 +939,30 @@ def _format_quote(
 
 def quote_from_company(
     name_or_number: str,
-    sum_insured: float,
-    building_age: int,
-    construction: str,
-    sprinklers: bool,
-    floors: int,
-    prior_claims: int,
+    sum_insured: Optional[float] = None,
+    building_age: Optional[int] = None,
+    construction: Optional[str] = None,
+    sprinklers: Optional[bool] = None,
+    floors: Optional[int] = None,
+    prior_claims: Optional[int] = None,
 ) -> None:
-    """End-to-end: Companies House enrichment, translation, quote print."""
+    """End-to-end: CH enrichment, translation, partial-info pricing, print.
+
+    All property fields are now optional. Anything omitted falls through
+    to :data:`PARTIAL_DEFAULTS` and the confidence band widens.
+    """
     # Lazy import so the engine doesn't require requests when only training.
     from companies_house import enrich_company
 
     co = enrich_company(name_or_number) or {}
-    inputs = {
-        "sum_insured": sum_insured,
-        "building_age": building_age,
-        "construction": construction,
-        "sprinklers": sprinklers,
-        "floors": floors,
-        "prior_claims": prior_claims,
-    }
-    company_dict = {
+
+    # Only pass through fields the caller actually supplied — letting
+    # quote_partial / translate_uk_commercial decide what's missing.
+    company_dict: Dict[str, Any] = {
         "postcode": co.get("postcode"),
         "sic_code": (co.get("sic_codes") or [None])[0],
+    }
+    raw_inputs: Dict[str, Optional[Any]] = {
         "sum_insured": sum_insured,
         "building_age": building_age,
         "construction": construction,
@@ -830,8 +970,14 @@ def quote_from_company(
         "floors": floors,
         "prior_claims": prior_claims,
     }
-    translated = translate_uk_commercial(company_dict)
-    quote = price_policy(translated["features"])
+    for k, v in raw_inputs.items():
+        if v is not None:
+            company_dict[k] = v
+
+    quote = quote_partial(company_dict)
+    defaults_used = quote["completeness"]["defaults_used"]
+    # Inputs that the print summary will display — fill from defaults.
+    inputs = {**PARTIAL_DEFAULTS, **{k: v for k, v in raw_inputs.items() if v is not None}}
     print(_format_quote(co, inputs, quote))
 
 
@@ -839,12 +985,16 @@ def quote_from_company(
 # Main
 # --------------------------------------------------------------------------- #
 def _run_demos() -> None:
-    print("\n--- Demo 1: Greggs ---")
+    print("\n--- Demo 1: Greggs — full data ---")
     quote_from_company("GREGGS PLC", 500_000, 20, "brick", True, 1, 0)
-    print("\n--- Demo 2: Wetherspoon ---")
+    print("\n--- Demo 2: Wetherspoon — full data ---")
     quote_from_company("WETHERSPOON", 2_000_000, 35, "mixed", False, 3, 2)
-    print("\n--- Demo 3: unknown 12345678 ---")
+    print("\n--- Demo 3: unknown 12345678 — graceful CH miss ---")
     quote_from_company("12345678", 250_000, 50, "timber", False, 2, 1)
+    print("\n--- Demo 4: partial — only sum insured ---")
+    quote_from_company("GREGGS PLC", sum_insured=500_000)
+    print("\n--- Demo 5: partial — only company number ---")
+    quote_from_company("12345678")
 
 
 if __name__ == "__main__":
