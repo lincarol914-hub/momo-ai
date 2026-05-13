@@ -67,21 +67,8 @@ export default function InsuranceAnalysis() {
 
   const onSubmit = async (values: FormValues) => {
     setLoading(true);
-    // Simulate analysis time so the UI feels considered
     await new Promise((r) => setTimeout(r, 1100));
     const r = generateReport(values as AnalysisInput);
-
-    saveLead({
-      type: "insurance_analysis",
-      name: values.contactName,
-      company: values.companyName,
-      email: values.email,
-      leadScore: r.scoring.leadScore,
-      urgency: r.scoring.urgency,
-      nextAction: r.scoring.nextAction,
-      payload: { input: values, report: r },
-    });
-
     setReport(r);
     setLoading(false);
     setTimeout(() => {
