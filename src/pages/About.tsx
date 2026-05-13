@@ -6,8 +6,8 @@ export default function About() {
     <>
       <PageHero
         eyebrow="About Momo"
-        title="Rebuilding commercial insurance around better workflows, better data, and better operating leverage."
-        subtitle="Momo is building an AI-native insurance platform focused on commercial insurance distribution, broker transformation, and specialist risk infrastructure."
+        title="Insurance, finally simple."
+        subtitle="Momo helps modern businesses understand their insurance needs, compare cover and manage policies in one place."
       />
 
       <section className="section">
@@ -15,18 +15,21 @@ export default function About() {
           <div className="lg:col-span-5">
             <Eyebrow>Our mission</Eyebrow>
             <h2 className="mt-5 font-display text-4xl text-ink leading-tight">
-              Make commercial insurance faster, clearer and more data-driven.
+              Make business insurance clearer, faster and fairer.
             </h2>
           </div>
           <div className="lg:col-span-7 space-y-6 text-lg text-muted-foreground leading-relaxed">
             <p>
-              The future of insurance will not be built by replacing human expertise, but by giving brokers,
-              underwriters, operators and clients better tools.
+              Most business owners buy insurance because they have to, not because they understand it.
+              We think that is wrong.
             </p>
             <p>
-              Momo combines acquisition-led growth with AI-enabled operations to create a more scalable,
-              specialist insurance platform - one that respects the regulated, relationship-driven nature of
-              the industry while modernising its operating model.
+              Momo uses plain language, smart analysis and real data to help you understand what cover
+              you actually need, how much it should cost, and where the gaps are.
+            </p>
+            <p>
+              Every recommendation is reviewed by experienced insurance professionals before it reaches you.
+              Technology helps us move faster; people make sure it is right.
             </p>
           </div>
         </div>
@@ -35,9 +38,9 @@ export default function About() {
       <section className="section bg-secondary/40">
         <div className="container-atlas grid md:grid-cols-3 gap-8">
           {[
-            { e: "Our approach", t: "Acquire, transform, grow.", d: "We invest in established insurance businesses and add the operating layer they need to scale." },
-            { e: "Human review & trust", t: "AI-assisted, human-decided.", d: "Every AI workflow is paired with source data, confidence scoring and reviewer approvals." },
-            { e: "What we're building", t: "An operating company for commercial insurance.", d: "Three operating systems, one shared data layer - across distribution and specialist MGA infrastructure." },
+            { e: "Clarity first", t: "No jargon. No hard sell.", d: "We explain cover in plain English and flag the things that actually matter to your business." },
+            { e: "Human review", t: "AI-assisted, people-approved.", d: "Our tools speed up the process, but an experienced broker reviews every recommendation." },
+            { e: "Fair pricing", t: "Transparent from the start.", d: "We show you pricing benchmarks and explain why a premium is high or low. No hidden fees." },
           ].map((b) => (
             <div key={b.e} className="rounded-2xl border border-border bg-card p-8">
               <Eyebrow>{b.e}</Eyebrow>
@@ -52,8 +55,8 @@ export default function About() {
         <div className="container-atlas">
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-14 flex flex-col md:flex-row gap-8 justify-between md:items-end">
             <div>
-              <Eyebrow dark>Talk to Momo</Eyebrow>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Whatever brings you here, we'd like to hear from you.</h2>
+              <Eyebrow dark>Get in touch</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">We would love to hear from you.</h2>
             </div>
             <CTARow dark secondaryLabel="Contact" />
           </div>
