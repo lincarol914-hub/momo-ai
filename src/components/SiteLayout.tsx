@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import momoLogo from "@/assets/momo-logo-clean.png";
 
 const NAV = [
   { to: "/insurance-analysis", label: "Analysis" },
@@ -20,31 +21,24 @@ export function AtlasLogo({
   dark?: boolean;
   size?: "header" | "footer";
 }) {
-  const dims = size === "footer" ? "h-14" : "h-10";
   return (
-    <Link to="/" className={cn("inline-flex items-center group", className)} aria-label="Momo AI home">
-      <span
+    <Link to="/" className={cn("flex items-center gap-2.5 group", className)} aria-label="Momo AI">
+      <div className={cn(
+        "rounded-xl overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105",
+        size === "footer" ? "h-14 w-14" : "h-10 w-10",
+        dark ? "bg-paper" : "bg-paper ring-1 ring-border"
+      )}>
+        <img src={momoLogo} alt="Momo AI" className="h-full w-full object-cover" />
+      </div>
+      <div
         className={cn(
-          "inline-flex items-center justify-center rounded-2xl overflow-hidden transition-transform group-hover:scale-105",
-          dark ? "bg-paper p-1.5 ring-1 ring-paper/20 shadow-elev" : ""
+          "font-display font-semibold tracking-tight leading-none",
+          size === "footer" ? "text-2xl" : "text-[18px]",
+          dark ? "text-paper" : "text-ink"
         )}
       >
-        <img
-          src="/momo-logo.png"
-          alt="Momo AI"
-          className={cn(dims, "w-auto select-none")}
-          draggable={false}
-          onError={(e) => {
-            // Fallback to wordmark if the asset isn't deployed yet.
-            const el = e.currentTarget;
-            el.style.display = "none";
-            el.parentElement?.insertAdjacentHTML(
-              "beforeend",
-              `<span class="font-display text-xl font-semibold tracking-tight ${dark ? "text-ink" : "text-ink"}">momo<span class="text-accent">.</span>ai</span>`
-            );
-          }}
-        />
-      </span>
+        momo<span className="text-accent">.</span>ai
+      </div>
     </Link>
   );
 }
