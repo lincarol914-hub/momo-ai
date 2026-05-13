@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
@@ -22,7 +23,25 @@ type Values = z.infer<typeof schema>;
 
 export default function Contact() {
   const [done, setDone] = useState(false);
-  const form = useForm<Values>({ resolver: zodResolver(schema) });
+  const [params] = useSearchParams();
+  const form = useForm<Values>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: params.get("name") ?? "",
+      company: params.get("company") ?? "",
+      email: params.get("email") ?? "",
+      phone: params.get("phone") ?? "",
+      website: params.get("website") ?? "",
+      message: params.get("topic")
+        ? `I'd like to discuss: ${params.get("topic")}.`
+        : params.get("message") ?? "",
+    },
+  });
+
+  useEffect(() => {
+    const topic = params.get("topic");
+    if (topic) toast(`Pre-filled with topic: ${topic}`);
+  }, [params]);
 
   const onSubmit = (v: Values) => {
     try {

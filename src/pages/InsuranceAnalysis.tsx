@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,7 @@ import { z } from "zod";
 import {
   Building2, Globe2, Mail, User, MapPin, Briefcase,
   AlertTriangle, ShieldCheck, ClipboardList, ArrowRight, Sparkles,
-  CheckCircle2, Upload, CalendarCheck, FileDown, RotateCcw, FileText, X,
+  CheckCircle2, Upload, CalendarCheck, FileDown, RotateCcw, FileText, X, Copy, Printer,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Disclaimer, Eyebrow, SectionHeader } from "@/components/atlas/Bits";
 import { generateReport, type AnalysisInput, type Report } from "@/lib/analyzer";
-import { downloadReport, buildMailto } from "@/lib/reportExport";
+import { downloadReport, buildMailto, reportToMarkdown } from "@/lib/reportExport";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -55,9 +55,13 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
+const LAST_REPORT_KEY = "momo:lastReport";
+const LAST_VALUES_KEY = "momo:lastValues";
+
 export default function InsuranceAnalysis() {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(false);
+  const [restored, setRestored] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -69,12 +73,30 @@ export default function InsuranceAnalysis() {
     },
   });
 
+  useEffect(() => {
+    try {
+      const r = localStorage.getItem(LAST_REPORT_KEY);
+      const v = localStorage.getItem(LAST_VALUES_KEY);
+      if (r) {
+        setReport(JSON.parse(r));
+        setRestored(true);
+      }
+      if (v) form.reset(JSON.parse(v));
+    } catch {
+      // ignore corrupted storage
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async (values: FormValues) => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1100));
     const r = generateReport(values as AnalysisInput);
     setReport(r);
+    setRestored(false);
     try {
+      localStorage.setItem(LAST_REPORT_KEY, JSON.stringify(r));
+      localStorage.setItem(LAST_VALUES_KEY, JSON.stringify(values));
       const stored = JSON.parse(localStorage.getItem("momo:submissions") || "[]");
       stored.push({ type: "analysis", values, at: new Date().toISOString() });
       localStorage.setItem("momo:submissions", JSON.stringify(stored));
@@ -89,7 +111,14 @@ export default function InsuranceAnalysis() {
 
   const reset = () => {
     setReport(null);
+    setRestored(false);
     form.reset();
+    try {
+      localStorage.removeItem(LAST_REPORT_KEY);
+      localStorage.removeItem(LAST_VALUES_KEY);
+    } catch {
+      // ignore
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -219,8 +248,14 @@ export default function InsuranceAnalysis() {
       </section>
 
       {report && (
-        <section id="report" className="section bg-secondary/40">
+        <section id="report" className="section bg-secondary/40 print:bg-paper print:py-0">
           <div className="container-atlas">
+            {restored && (
+              <div className="mb-6 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-ink flex items-center justify-between gap-3 print:hidden">
+                <span>We restored your most recent analysis. Run a new one to replace it.</span>
+                <Button variant="ghost" size="sm" onClick={() => setRestored(false)}>Dismiss</Button>
+              </div>
+            )}
             <ReportView report={report} onReset={reset} />
           </div>
         </section>
@@ -289,6 +324,18 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
     window.location.href = buildMailto(report);
     toast.success("Report downloaded. Your email client should open with a summary.");
   };
+
+  const handleCopy = async () => {
+    const md = reportToMarkdown(report);
+    try {
+      await navigator.clipboard.writeText(md);
+      toast.success("Report copied to clipboard.");
+    } catch {
+      toast.error("Could not copy. Try downloading instead.");
+    }
+  };
+
+  const handlePrint = () => window.print();
 
   const handleUploadClick = () => fileInputRef.current?.click();
 
@@ -414,7 +461,7 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
       </div>
 
       {/* CTAs */}
-      <div className="rounded-2xl border border-border bg-card p-8">
+      <div className="rounded-2xl border border-border bg-card p-8 print:hidden">
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="atlas"><Link to="/contact"><CalendarCheck className="h-4 w-4" /> Book a Review Call</Link></Button>
           <Button variant="outline" onClick={handleSendReport}>
@@ -422,6 +469,12 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
           </Button>
           <Button variant="outline" onClick={() => downloadReport(report)}>
             <FileDown className="h-4 w-4" /> Download Report
+          </Button>
+          <Button variant="outline" onClick={handleCopy}>
+            <Copy className="h-4 w-4" /> Copy Summary
+          </Button>
+          <Button variant="outline" onClick={handlePrint}>
+            <Printer className="h-4 w-4" /> Print
           </Button>
           <Button variant="outline" onClick={handleUploadClick}>
             <Upload className="h-4 w-4" /> Upload Policy Documents
@@ -475,7 +528,7 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
         is taken. AI-generated outputs may be incomplete and should be reviewed.
       </Disclaimer>
 
-      <div className="flex flex-col sm:flex-row justify-center gap-3 pt-6">
+      <div className="flex flex-col sm:flex-row justify-center gap-3 pt-6 print:hidden">
         <Button variant="atlas" size="lg" onClick={onReset}>
           <RotateCcw className="h-4 w-4" /> Run another analysis
         </Button>
