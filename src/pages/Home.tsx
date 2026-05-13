@@ -204,19 +204,19 @@ export default function Home() {
       {/* FINAL CTA */}
       <section className="pb-24 pt-4">
         <div className="container-atlas">
-          <div className="rounded-3xl bg-navy text-paper p-10 md:p-16 relative overflow-hidden">
-            <div className="absolute inset-0 bg-grid opacity-25" />
-            <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/30 blur-3xl pointer-events-none" />
+          <div className="rounded-3xl border border-border bg-gradient-paper p-10 md:p-16 relative overflow-hidden">
+            <div className="absolute inset-0 bg-grid-light opacity-30" />
+            <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/15 blur-3xl pointer-events-none" />
             <div className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
               <div>
-                <h2 className="font-display text-4xl md:text-5xl text-paper leading-[1.02] tracking-tight max-w-2xl">
+                <h2 className="font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight max-w-2xl">
                   Get the right cover. <span className="text-accent italic">In minutes.</span>
                 </h2>
-                <p className="mt-4 text-paper/65 max-w-xl">
+                <p className="mt-4 text-muted-foreground max-w-xl">
                   Free analysis. No credit card. No sales call required.
                 </p>
               </div>
-              <CTARow dark primaryLabel="Get my analysis" />
+              <CTARow primaryLabel="Get my analysis" />
             </div>
           </div>
         </div>
