@@ -58,8 +58,8 @@ export default function Admin() {
     <>
       <PageHero
         eyebrow="Admin · CRM placeholder"
-        title="Wombat leads dashboard."
-        subtitle="A local view of leads captured by the Wombat website. Replace with the production CRM when ready."
+        title="Momo leads dashboard."
+        subtitle="A local view of leads captured by the Momo website. Replace with the production CRM when ready."
       />
 
       <section className="section">
@@ -125,9 +125,9 @@ export default function Admin() {
                     <tr key={l.id} className="border-t border-border hover:bg-secondary/30 transition-colors">
                       <Td className="font-mono text-xs text-muted-foreground">{new Date(l.createdAt).toLocaleString()}</Td>
                       <Td><span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded bg-secondary text-ink font-semibold">{TYPE_LABEL[l.type]}</span></Td>
-                      <Td className="font-medium text-ink">{l.name || "—"}</Td>
-                      <Td>{l.company || "—"}</Td>
-                      <Td className="text-muted-foreground">{l.email || "—"}</Td>
+                      <Td className="font-medium text-ink">{l.name || "-"}</Td>
+                      <Td>{l.company || "-"}</Td>
+                      <Td className="text-muted-foreground">{l.email || "-"}</Td>
                       <Td><ScoreCell value={l.leadScore} /></Td>
                       <Td><UrgencyCell value={l.urgency} /></Td>
                       <Td>
@@ -173,12 +173,12 @@ function Td({ children, className = "" }: { children?: React.ReactNode; classNam
   return <td className={`px-4 py-3 align-middle ${className}`}>{children}</td>;
 }
 function ScoreCell({ value }: { value?: number }) {
-  if (!value) return <span className="text-muted-foreground">—</span>;
+  if (!value) return <span className="text-muted-foreground">-</span>;
   const tone = value >= 80 ? "text-accent" : value >= 60 ? "text-ink" : "text-muted-foreground";
   return <span className={`font-mono font-semibold ${tone}`}>{value}</span>;
 }
 function UrgencyCell({ value }: { value?: "Low" | "Medium" | "High" }) {
-  if (!value) return <span className="text-muted-foreground">—</span>;
+  if (!value) return <span className="text-muted-foreground">-</span>;
   const cls = value === "High" ? "bg-destructive/10 text-destructive"
     : value === "Medium" ? "bg-accent/10 text-accent"
     : "bg-success/10 text-success";
@@ -199,11 +199,11 @@ function LeadDialog({ lead }: { lead: Lead }) {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 text-sm">
             <Info label="Type" value={TYPE_LABEL[lead.type]} />
-            <Info label="Email" value={lead.email || "—"} />
+            <Info label="Email" value={lead.email || "-"} />
             <Info label="Status" value={lead.status} />
-            <Info label="Score" value={lead.leadScore?.toString() || "—"} />
-            <Info label="Urgency" value={lead.urgency || "—"} />
-            <Info label="Next action" value={lead.nextAction || "—"} />
+            <Info label="Score" value={lead.leadScore?.toString() || "-"} />
+            <Info label="Urgency" value={lead.urgency || "-"} />
+            <Info label="Next action" value={lead.nextAction || "-"} />
           </div>
           <div>
             <Label>Notes</Label>

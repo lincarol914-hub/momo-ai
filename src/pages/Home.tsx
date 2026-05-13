@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Sparkles, Shield, Zap, Scale, Check } from "lucide-react";
+import { ArrowUpRight, Sparkles, Shield, Zap, Scale, Check, Bitcoin, Wallet, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CTARow, SectionHeader } from "@/components/atlas/Bits";
 import { HeroDashboard } from "@/components/atlas/HeroDashboard";
@@ -14,30 +14,27 @@ export default function Home() {
         <div className="absolute -top-40 -right-40 h-[560px] w-[560px] rounded-full bg-accent/25 blur-[160px] pointer-events-none" />
         <div className="absolute -bottom-40 -left-40 h-[480px] w-[480px] rounded-full bg-accent/10 blur-[140px] pointer-events-none" />
         <div className="container-atlas relative pt-24 md:pt-32 pb-24 md:pb-32">
-          <div className="grid lg:grid-cols-12 gap-14 items-center">
-            <div className="lg:col-span-6 animate-fade-in">
-              <div className="inline-flex items-center gap-2 rounded-full border border-paper/15 bg-paper/[0.04] px-3 py-1.5 text-xs text-paper/80 backdrop-blur">
-                <Sparkles className="h-3 w-3 text-accent" />
-                Business insurance, finally simple
-              </div>
-              <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[80px] leading-[0.98] font-medium tracking-tight text-balance text-paper">
-                Cover that
-                <br />
-                <span className="text-accent italic">actually fits.</span>
-              </h1>
-              <p className="mt-7 text-lg md:text-xl text-paper/65 leading-relaxed max-w-xl">
-                Wombat finds the right business insurance for your company in minutes —
-                not weeks. Clearer cover, fairer prices, no jargon.
-              </p>
-              <CTARow dark className="mt-9" primaryLabel="Get my analysis" />
-              <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-paper/50 font-mono">
-                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Free, no obligation</span>
-                <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> FCA-aware</span>
-                <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> Human-reviewed</span>
-              </div>
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <div className="inline-flex items-center gap-2 rounded-full border border-paper/15 bg-paper/[0.04] px-3 py-1.5 text-xs text-paper/80 backdrop-blur">
+              <Sparkles className="h-3 w-3 text-accent" />
+              Business insurance, finally simple
             </div>
-            <div className="lg:col-span-6 animate-fade-in-slow">
-              <HeroDashboard />
+            <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-medium tracking-tight text-balance text-paper">
+              Cover that
+              <br />
+              <span className="text-accent italic">actually fits.</span>
+            </h1>
+            <p className="mt-7 text-lg md:text-xl text-paper/65 leading-relaxed max-w-2xl mx-auto">
+              Momo finds the right business insurance for your company in minutes. Clearer cover, fairer prices, no jargon.
+            </p>
+            <div className="mt-9 flex justify-center">
+              <CTARow dark primaryLabel="Get my analysis" />
+            </div>
+            <div className="mt-10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs text-paper/50 font-mono">
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Free, no obligation</span>
+              <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> FCA-aware</span>
+              <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> Human-reviewed</span>
+              <span className="flex items-center gap-1.5"><Bitcoin className="h-3 w-3" /> Pay in crypto or card</span>
             </div>
           </div>
         </div>
@@ -47,7 +44,7 @@ export default function Home() {
       <section className="section">
         <div className="container-atlas">
           <SectionHeader
-            eyebrow="Why Wombat"
+            eyebrow="Why Momo"
             title={<>Insurance that <span className="text-accent italic">works for you.</span></>}
             description="Built for modern businesses who want clarity, speed and cover that genuinely matches their risk."
           />
@@ -55,7 +52,7 @@ export default function Home() {
             <ValueCard
               icon={Zap}
               title="Minutes, not weeks"
-              body="Tell us about your business once. Get a clear picture of what cover you need and what it should cost — fast."
+              body="Tell us about your business once. Get a clear picture of what cover you need and what it should cost - fast."
             />
             <ValueCard
               icon={Shield}
@@ -67,6 +64,56 @@ export default function Home() {
               title="Fair, transparent pricing"
               body="See what you're paying for and why. We negotiate with insurers so you don't pay for cover you don't need."
             />
+          </div>
+        </div>
+      </section>
+
+      {/* DASHBOARD PREVIEW */}
+      <section className="section pt-0">
+        <div className="container-atlas">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-5">
+              <div className="eyebrow text-muted-foreground">
+                <span className="h-px w-6 bg-muted-foreground/40" />
+                Live picture
+              </div>
+              <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight text-balance">
+                One view of your <span className="text-accent italic">whole insurance stack.</span>
+              </h2>
+              <p className="mt-5 text-lg text-muted-foreground max-w-md">
+                Cover, quotes, renewals and gaps in a single place. No more scattered PDFs or chasing brokers for updates.
+              </p>
+            </div>
+            <div className="lg:col-span-7">
+              <HeroDashboard />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PAYMENTS */}
+      <section className="section pt-0">
+        <div className="container-atlas">
+          <div className="rounded-3xl border border-border bg-card p-10 md:p-14">
+            <div className="grid lg:grid-cols-12 gap-10 items-center">
+              <div className="lg:col-span-7">
+                <div className="eyebrow text-muted-foreground">
+                  <span className="h-px w-6 bg-muted-foreground/40" />
+                  Pay your way
+                </div>
+                <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight">
+                  Card, bank transfer or <span className="text-accent italic">crypto.</span>
+                </h2>
+                <p className="mt-5 text-lg text-muted-foreground max-w-xl">
+                  Settle your premium in pounds, dollars or euros, or pay in Bitcoin, Ethereum or USDC. Same cover, your choice of rails.
+                </p>
+              </div>
+              <div className="lg:col-span-5 grid grid-cols-3 gap-3">
+                <PayTile icon={CreditCard} label="Card" sub="Visa, Mastercard, Amex" />
+                <PayTile icon={Wallet} label="Bank" sub="ACH, SEPA, Faster Payments" />
+                <PayTile icon={Bitcoin} label="Crypto" sub="BTC, ETH, USDC" accent />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -137,7 +184,7 @@ export default function Home() {
           <SectionHeader
             eyebrow="Who we help"
             title={<>Built for <span className="text-accent italic">modern businesses.</span></>}
-            description="From early-stage startups to established firms — if your business is moving fast, your insurance should too."
+            description="From early-stage startups to established firms - if your business is moving fast, your insurance should too."
           />
           <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
@@ -196,6 +243,16 @@ function Sample({ label, value, accent }: { label: string; value: string; accent
     <div className="flex items-center justify-between border-b border-border pb-2.5 last:border-0">
       <span className="text-muted-foreground">{label}</span>
       <span className={accent ? "text-accent font-semibold font-mono" : "text-ink font-medium font-mono"}>{value}</span>
+    </div>
+  );
+}
+
+function PayTile({ icon: Icon, label, sub, accent }: { icon: React.ComponentType<{className?:string}>; label: string; sub: string; accent?: boolean }) {
+  return (
+    <div className={`rounded-xl border p-4 flex flex-col gap-2 ${accent ? "border-accent/50 bg-accent/5" : "border-border bg-background"}`}>
+      <Icon className={`h-5 w-5 ${accent ? "text-accent" : "text-ink"}`} />
+      <div className="font-display font-semibold text-ink text-sm">{label}</div>
+      <div className="text-[11px] text-muted-foreground font-mono leading-tight">{sub}</div>
     </div>
   );
 }

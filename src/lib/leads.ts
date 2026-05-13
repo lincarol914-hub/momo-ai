@@ -11,9 +11,9 @@ export type LeadStatus =
   | "Reviewed"
   | "Contacted"
   | "Call booked"
-  | "Sent to Wombat Growth OS"
-  | "Sent to Wombat Risk OS"
-  | "Sent to Wombat Acquire OS"
+  | "Sent to Momo Growth OS"
+  | "Sent to Momo Risk OS"
+  | "Sent to Momo Acquire OS"
   | "Closed";
 
 export const LEAD_STATUSES: LeadStatus[] = [
@@ -21,9 +21,9 @@ export const LEAD_STATUSES: LeadStatus[] = [
   "Reviewed",
   "Contacted",
   "Call booked",
-  "Sent to Wombat Growth OS",
-  "Sent to Wombat Risk OS",
-  "Sent to Wombat Acquire OS",
+  "Sent to Momo Growth OS",
+  "Sent to Momo Risk OS",
+  "Sent to Momo Acquire OS",
   "Closed",
 ];
 
