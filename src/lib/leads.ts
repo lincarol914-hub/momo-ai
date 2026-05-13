@@ -1,10 +1,5 @@
 // Tiny localStorage-backed lead store used as a CRM placeholder.
-export type LeadType =
-  | "insurance_analysis"
-  | "contact"
-  | "broker"
-  | "investor"
-  | "partner";
+export type LeadType = "insurance_analysis" | "contact";
 
 export type LeadStatus =
   | "New"
