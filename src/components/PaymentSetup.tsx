@@ -344,6 +344,25 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
+function ScheduleTab({
+  active, onClick, children,
+}: {
+  active: boolean; onClick: () => void; children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex-1 rounded-md py-1.5 text-sm font-medium transition-all",
+        active ? "bg-card text-ink shadow-sm" : "text-muted-foreground hover:text-ink"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 function MethodTile({
   selected, onClick, icon: Icon, label, sub,
 }: {
