@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import momoLogo from "@/assets/momo-logo.jpeg";
+import momoLogo from "@/assets/momo-logo-clean.png";
 
 const NAV = [
   { to: "/insurance-analysis", label: "Analysis" },
