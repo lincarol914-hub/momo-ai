@@ -8,7 +8,7 @@ export default function Partners() {
       <PageHero
         eyebrow="For Insurance Partners"
         title="Better submissions. Cleaner data. More scalable distribution."
-        subtitle="Wombat works with insurers, MGAs, reinsurers, Lloyd's brokers, wholesale brokers and capacity providers to improve commercial insurance workflows."
+        subtitle="Momo works with insurers, MGAs, reinsurers, Lloyd's brokers, wholesale brokers and capacity providers to improve commercial insurance workflows."
       />
 
       <section className="section">
@@ -40,8 +40,8 @@ export default function Partners() {
           <div>
             <SectionHeader eyebrow="Data & workflow benefits" title="A more efficient distribution layer." />
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Wombat aims to provide cleaner risk data, structured submissions, consistent documentation and
-              better servicing workflows — improving combined ratios, response times and broker–insurer
+              Momo aims to provide cleaner risk data, structured submissions, consistent documentation and
+              better servicing workflows - improving combined ratios, response times and broker–insurer
               relationships.
             </p>
           </div>
@@ -53,7 +53,7 @@ export default function Partners() {
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-14 flex flex-col md:flex-row gap-8 justify-between md:items-end">
             <div>
               <Eyebrow dark>Partnership</Eyebrow>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Discuss a partnership with Wombat.</h2>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Discuss a partnership with Momo.</h2>
             </div>
             <CTARow dark primaryHref="/contact" primaryLabel="Discuss Partnership" secondaryLabel="Run Insurance Analysis" secondaryHref="/insurance-analysis" />
           </div>

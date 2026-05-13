@@ -56,8 +56,8 @@ export default function Contact() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="Talk to Wombat."
-        subtitle="Whether you're a business looking at cover, a broker owner exploring options, an insurance partner or an investor — start here."
+        title="Talk to Momo."
+        subtitle="Whether you're a business looking at cover, a broker owner exploring options, an insurance partner or an investor - start here."
       />
 
       <section className="section">

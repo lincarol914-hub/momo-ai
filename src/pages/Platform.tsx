@@ -13,12 +13,12 @@ export default function Platform() {
       <PageHero
         eyebrow="Platform"
         title="The operating system behind modern insurance distribution."
-        subtitle="Three Wombat operating systems — Risk, Growth and Acquire — share a single data, audit and review layer."
+        subtitle="Three Momo operating systems - Risk, Growth and Acquire - share a single data, audit and review layer."
       />
 
       <OS
         tag="Risk OS"
-        title="Wombat Risk OS"
+        title="Momo Risk OS"
         body="Core insurance operations platform for client profiles, risk scans, intake, submissions, underwriting support, quotes, policies, renewals, claims and compliance."
         features={[
           { i: ScanSearch, t: "AI risk scanner", d: "Generate risk profiles from website and intake data." },
@@ -37,7 +37,7 @@ export default function Platform() {
       <OS
         dark
         tag="Growth OS"
-        title="Wombat Growth OS"
+        title="Momo Growth OS"
         body="Growth platform for prospect research, outreach, campaigns, partnerships, content, events, and opportunity handoff."
         features={[
           { i: Search, t: "Prospect research", d: "Ideal-customer signals enriched and scored." },
@@ -53,7 +53,7 @@ export default function Platform() {
 
       <OS
         tag="Acquire OS"
-        title="Wombat Acquire OS"
+        title="Momo Acquire OS"
         body="Acquisition platform for sourcing, analysing, diligencing, valuing, and integrating brokers, MGAs, and insurance services businesses."
         features={[
           { i: Globe, t: "Target research", d: "Universe of brokers, MGAs and TPAs." },
@@ -89,7 +89,7 @@ export default function Platform() {
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-14 flex flex-col md:flex-row gap-8 justify-between md:items-end">
             <div>
               <Eyebrow dark>See the platform</Eyebrow>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Run a Company Insurance Analysis powered by Wombat Risk OS.</h2>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Run a Company Insurance Analysis powered by Momo Risk OS.</h2>
             </div>
             <CTARow dark />
           </div>
@@ -109,7 +109,7 @@ function OS({ tag, title, body, features, dark = false }: {
       <div className="container-atlas">
         <div className="grid lg:grid-cols-12 gap-10 items-end">
           <div className="lg:col-span-7">
-            <SectionHeader dark={dark} eyebrow={`Wombat · ${tag}`} title={title} description={body} />
+            <SectionHeader dark={dark} eyebrow={`Momo · ${tag}`} title={title} description={body} />
           </div>
         </div>
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

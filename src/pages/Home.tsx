@@ -26,7 +26,7 @@ export default function Home() {
                 <span className="text-accent italic">actually fits.</span>
               </h1>
               <p className="mt-7 text-lg md:text-xl text-paper/65 leading-relaxed max-w-xl">
-                Wombat finds the right business insurance for your company in minutes —
+                Momo finds the right business insurance for your company in minutes -
                 not weeks. Clearer cover, fairer prices, no jargon.
               </p>
               <CTARow dark className="mt-9" primaryLabel="Get my analysis" />
@@ -47,7 +47,7 @@ export default function Home() {
       <section className="section">
         <div className="container-atlas">
           <SectionHeader
-            eyebrow="Why Wombat"
+            eyebrow="Why Momo"
             title={<>Insurance that <span className="text-accent italic">works for you.</span></>}
             description="Built for modern businesses who want clarity, speed and cover that genuinely matches their risk."
           />
@@ -55,7 +55,7 @@ export default function Home() {
             <ValueCard
               icon={Zap}
               title="Minutes, not weeks"
-              body="Tell us about your business once. Get a clear picture of what cover you need and what it should cost — fast."
+              body="Tell us about your business once. Get a clear picture of what cover you need and what it should cost - fast."
             />
             <ValueCard
               icon={Shield}
@@ -137,7 +137,7 @@ export default function Home() {
           <SectionHeader
             eyebrow="Who we help"
             title={<>Built for <span className="text-accent italic">modern businesses.</span></>}
-            description="From early-stage startups to established firms — if your business is moving fast, your insurance should too."
+            description="From early-stage startups to established firms - if your business is moving fast, your insurance should too."
           />
           <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[

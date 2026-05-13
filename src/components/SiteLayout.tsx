@@ -26,7 +26,7 @@ export function AtlasLogo({ className, dark = false }: { className?: string; dar
       </div>
       <div className="leading-none">
         <div className={cn("font-display text-[18px] font-semibold tracking-tight", dark ? "text-paper" : "text-ink")}>
-          wombat<span className="text-accent">.</span>ai
+          momo<span className="text-accent">.</span>ai
         </div>
       </div>
     </Link>
@@ -136,7 +136,7 @@ export function Footer() {
           ]} />
         </div>
         <div className="hairline border-paper/10 mt-14 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-paper/50">
-          <div>© {new Date().getFullYear()} Wombat AI. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} Momo AI. All rights reserved.</div>
           <div className="max-w-2xl leading-relaxed">
             Information on this website is general in nature and does not constitute insurance advice.
             Cover availability depends on insurer appetite, underwriting, jurisdiction and policy terms.

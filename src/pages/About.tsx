@@ -5,9 +5,9 @@ export default function About() {
   return (
     <>
       <PageHero
-        eyebrow="About Wombat"
+        eyebrow="About Momo"
         title="Rebuilding commercial insurance around better workflows, better data, and better operating leverage."
-        subtitle="Wombat is building an AI-native insurance platform focused on commercial insurance distribution, broker transformation, and specialist risk infrastructure."
+        subtitle="Momo is building an AI-native insurance platform focused on commercial insurance distribution, broker transformation, and specialist risk infrastructure."
       />
 
       <section className="section">
@@ -24,8 +24,8 @@ export default function About() {
               underwriters, operators and clients better tools.
             </p>
             <p>
-              Wombat combines acquisition-led growth with AI-enabled operations to create a more scalable,
-              specialist insurance platform — one that respects the regulated, relationship-driven nature of
+              Momo combines acquisition-led growth with AI-enabled operations to create a more scalable,
+              specialist insurance platform - one that respects the regulated, relationship-driven nature of
               the industry while modernising its operating model.
             </p>
           </div>
@@ -37,7 +37,7 @@ export default function About() {
           {[
             { e: "Our approach", t: "Acquire, transform, grow.", d: "We invest in established insurance businesses and add the operating layer they need to scale." },
             { e: "Human review & trust", t: "AI-assisted, human-decided.", d: "Every AI workflow is paired with source data, confidence scoring and reviewer approvals." },
-            { e: "What we're building", t: "An operating company for commercial insurance.", d: "Three operating systems, one shared data layer — across distribution and specialist MGA infrastructure." },
+            { e: "What we're building", t: "An operating company for commercial insurance.", d: "Three operating systems, one shared data layer - across distribution and specialist MGA infrastructure." },
           ].map((b) => (
             <div key={b.e} className="rounded-2xl border border-border bg-card p-8">
               <Eyebrow>{b.e}</Eyebrow>
@@ -52,7 +52,7 @@ export default function About() {
         <div className="container-atlas">
           <div className="rounded-3xl bg-navy text-paper p-10 md:p-14 flex flex-col md:flex-row gap-8 justify-between md:items-end">
             <div>
-              <Eyebrow dark>Talk to Wombat</Eyebrow>
+              <Eyebrow dark>Talk to Momo</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper max-w-xl">Whatever brings you here, we'd like to hear from you.</h2>
             </div>
             <CTARow dark secondaryLabel="Contact" />

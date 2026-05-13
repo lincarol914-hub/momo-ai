@@ -12,7 +12,7 @@ export default function Businesses() {
       <PageHero
         eyebrow="For Businesses"
         title="Commercial insurance made clearer."
-        subtitle="Wombat helps businesses understand their risks, prepare better insurance information, compare options, and manage policies more efficiently."
+        subtitle="Momo helps businesses understand their risks, prepare better insurance information, compare options, and manage policies more efficiently."
       />
 
       <section className="section">
@@ -41,11 +41,11 @@ export default function Businesses() {
 
       <section className="section bg-secondary/40">
         <div className="container-atlas">
-          <SectionHeader eyebrow="What Wombat helps with" title="A clearer path through commercial insurance." />
+          <SectionHeader eyebrow="What Momo helps with" title="A clearer path through commercial insurance." />
           <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <FeatureCard icon={FileSearch} title="Insurance needs analysis">Initial AI-assisted view of your exposures and likely cover.</FeatureCard>
             <FeatureCard icon={ShieldCheck} title="Risk profile creation">A structured profile of your business risks and controls.</FeatureCard>
-            <FeatureCard icon={ScrollText} title="Intake & proposal support">Reusable, structured intake — no repeating yourself each year.</FeatureCard>
+            <FeatureCard icon={ScrollText} title="Intake & proposal support">Reusable, structured intake - no repeating yourself each year.</FeatureCard>
             <FeatureCard icon={Sparkles} title="Quote comparison">Side-by-side comparison across insurers and wordings.</FeatureCard>
             <FeatureCard icon={ScrollText} title="Policy checking">Plain-language summary of cover, limits and exclusions.</FeatureCard>
             <FeatureCard icon={RefreshCw} title="Renewal preparation">Submissions prepared in advance, not in the final week.</FeatureCard>
@@ -82,7 +82,7 @@ export default function Businesses() {
 
       <section className="section bg-secondary/40">
         <div className="container-atlas">
-          <SectionHeader eyebrow="Products we can help review" title="Cover Wombat can help you scope and compare." />
+          <SectionHeader eyebrow="Products we can help review" title="Cover Momo can help you scope and compare." />
           <div className="mt-10 flex flex-wrap gap-2">
             {[
               "Employers' liability", "Public liability", "Professional indemnity", "Cyber",

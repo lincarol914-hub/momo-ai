@@ -1,5 +1,5 @@
 // Mock "AI" analyzer that generates a plausible insurance report from form input.
-// All logic is deterministic and runs locally — placeholder for a real model.
+// All logic is deterministic and runs locally - placeholder for a real model.
 
 export interface AnalysisInput {
   companyName: string;
@@ -129,7 +129,7 @@ export function generateReport(i: AnalysisInput): Report {
     key: "el",
     label: "Employers' liability risk",
     level: pickRiskLevel((Number(i.employeeCount?.split("-")[0] || 0) > 0 || i.employeeCount === "1-10") ? 6 : 3),
-    explanation: "Employees can suffer injury or illness arising from work — a statutory cover requirement in many jurisdictions.",
+    explanation: "Employees can suffer injury or illness arising from work - a statutory cover requirement in many jurisdictions.",
     missing: "Headcount, payroll, role types, H&S policies, prior claims.",
   });
 
@@ -218,10 +218,10 @@ export function generateReport(i: AnalysisInput): Report {
   // ----- NEXT STEPS
   const nextSteps = [
     "Upload existing policy documents for AI policy checking.",
-    "Complete the detailed Wombat intake form.",
+    "Complete the detailed Momo intake form.",
     "Review insurance requirements in your top customer contracts.",
     "Compare current cover against the risks identified above.",
-    "Speak with a qualified insurance professional on the Wombat team.",
+    "Speak with a qualified insurance professional on the Momo team.",
     i.renewalDate
       ? `Prepare market submission ahead of your renewal (${i.renewalDate}).`
       : "Confirm renewal dates so submissions can be prepared in advance.",

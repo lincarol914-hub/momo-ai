@@ -103,13 +103,13 @@ export default function InsuranceAnalysis() {
         <div className="absolute inset-0 bg-gradient-hero" />
         <div className="absolute inset-0 bg-grid opacity-40" />
         <div className="container-atlas relative py-20 md:py-24">
-          <Eyebrow dark>Wombat · Company Insurance Analysis</Eyebrow>
+          <Eyebrow dark>Momo · Company Insurance Analysis</Eyebrow>
           <h1 className="mt-6 font-display text-4xl md:text-6xl text-paper leading-[1.05] max-w-3xl text-balance">
             See what insurance your company may need.
           </h1>
           <p className="mt-6 text-lg text-paper/70 max-w-2xl">
-            Enter your company details and Wombat will generate an initial insurance needs and risk
-            analysis — likely exposures, relevant policies, missing information and next steps.
+            Enter your company details and Momo will generate an initial insurance needs and risk
+            analysis - likely exposures, relevant policies, missing information and next steps.
             Outputs are reviewed by a qualified insurance professional before any recommendation is acted on.
           </p>
         </div>
@@ -291,7 +291,7 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
         <div className="absolute inset-0 bg-grid opacity-30" />
         <div className="relative grid md:grid-cols-12 gap-8 items-start">
           <div className="md:col-span-7">
-            <Eyebrow dark>Wombat · Insurance Analysis Report</Eyebrow>
+            <Eyebrow dark>Momo · Insurance Analysis Report</Eyebrow>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-paper leading-tight">
               {snapshot.companyName}
             </h2>
@@ -389,10 +389,10 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
           <Button variant="outline" onClick={() => toast.success("Report saved. We'll email it shortly.")}>
             <Mail className="h-4 w-4" /> Send Me This Report
           </Button>
-          <Button variant="outline" onClick={() => toast("Document upload is coming soon.", { description: "Placeholder for Wombat Risk OS integration." })}>
+          <Button variant="outline" onClick={() => toast("Document upload is coming soon.", { description: "Placeholder for Momo Risk OS integration." })}>
             <Upload className="h-4 w-4" /> Upload Policy Documents
           </Button>
-          <Button variant="outline" onClick={() => toast("Detailed intake placeholder.", { description: "Will route to Wombat Risk OS." })}>
+          <Button variant="outline" onClick={() => toast("Detailed intake placeholder.", { description: "Will route to Momo Risk OS." })}>
             <FileDown className="h-4 w-4" /> Start Detailed Intake
           </Button>
           <Button variant="ghost" onClick={onReset}><RotateCcw className="h-4 w-4" /> Run a new analysis</Button>

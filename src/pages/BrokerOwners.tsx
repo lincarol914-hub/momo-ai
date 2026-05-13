@@ -48,15 +48,15 @@ export default function BrokerOwners() {
       <PageHero
         eyebrow="For Broker Owners"
         title="Preserve your legacy. Modernise your platform."
-        subtitle="Wombat partners with and acquires insurance brokers, MGAs and specialist insurance businesses, then supports them with AI-powered operating infrastructure."
+        subtitle="Momo partners with and acquires insurance brokers, MGAs and specialist insurance businesses, then supports them with AI-powered operating infrastructure."
       />
 
       <section className="section">
         <div className="container-atlas grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
-              eyebrow="Why broker owners talk to Wombat"
-              title="Succession, growth or modernisation — on your terms."
+              eyebrow="Why broker owners talk to Momo"
+              title="Succession, growth or modernisation - on your terms."
             />
           </div>
           <div className="lg:col-span-7 grid sm:grid-cols-2 gap-3">
@@ -142,8 +142,8 @@ export default function BrokerOwners() {
           <div className="lg:col-span-5">
             <Eyebrow><Lock className="h-3 w-3" /> Confidential</Eyebrow>
             <h2 className="mt-5 font-display text-4xl text-ink">Start a confidential conversation.</h2>
-            <p className="mt-4 text-muted-foreground">All enquiries are handled discreetly by the Wombat founders. No third-party brokers, no shared data.</p>
-            <Disclaimer>Submitting this form does not create any obligation. Wombat will only contact you with regard to your enquiry.</Disclaimer>
+            <p className="mt-4 text-muted-foreground">All enquiries are handled discreetly by the Momo founders. No third-party brokers, no shared data.</p>
+            <Disclaimer>Submitting this form does not create any obligation. Momo will only contact you with regard to your enquiry.</Disclaimer>
           </div>
           <div className="lg:col-span-7">
             {done ? (
@@ -179,7 +179,7 @@ function SuccessState({ onReset }: { onReset: () => void }) {
         <CheckCircle2 className="h-6 w-6" />
       </div>
       <h3 className="mt-4 font-display text-2xl text-ink">Message received.</h3>
-      <p className="mt-2 text-muted-foreground">An Wombat founder will be in touch within two working days, confidentially.</p>
+      <p className="mt-2 text-muted-foreground">An Momo founder will be in touch within two working days, confidentially.</p>
       <Button variant="ghost" className="mt-5" onClick={onReset}>Send another message</Button>
     </div>
   );
