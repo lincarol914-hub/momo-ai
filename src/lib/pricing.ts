@@ -374,3 +374,73 @@ export function quoteByLead(leadId: string): Quote | undefined {
 export function formatGBP(n: number): string {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 }).format(n);
 }
+
+// --- Ranged pricing (for first-pass quotes with partial info) ---
+
+export type QuoteConfidence = "low" | "medium" | "high";
+
+export interface RangedPricedLine extends PricedLine {
+  low: number;
+  high: number;
+}
+
+export interface RangedQuote {
+  id: string;
+  leadId: string;
+  createdAt: string;
+  validUntil: string;
+  currency: "GBP" | "USD" | "EUR";
+  confidence: QuoteConfidence;
+  lines: RangedPricedLine[];
+  totalAnnualPremium: number;
+  totalMonthlyPremium: number;
+  totalLow: number;
+  totalHigh: number;
+}
+
+const SPREAD: Record<QuoteConfidence, number> = {
+  low: 0.4,    // ±40% — only CH data
+  medium: 0.18, // ±18% — CH + a few extra answers
+  high: 0.05,  // ±5%  — full intake
+};
+
+export function priceProductRanged(
+  template: ProductTemplate,
+  lead: Lead,
+  confidence: QuoteConfidence
+): RangedPricedLine {
+  const base = priceProduct(template, lead);
+  const spread = SPREAD[confidence];
+  return {
+    ...base,
+    low: Math.max(template.basePremium * 0.4, Math.round(base.annualPremium * (1 - spread))),
+    high: Math.round(base.annualPremium * (1 + spread)),
+  };
+}
+
+export function buildRangedQuote(lead: Lead, confidence: QuoteConfidence): RangedQuote {
+  const applicable = PRODUCT_CATALOG.filter((p) => p.appliesTo(lead.rawInput));
+  const lines = applicable.map((t) => priceProductRanged(t, lead, confidence));
+  const order = { Essential: 0, Recommended: 1, "Consider later": 2 } as const;
+  lines.sort((a, b) => order[a.priority] - order[b.priority] || b.annualPremium - a.annualPremium);
+
+  const total = lines.reduce((acc, l) => acc + l.annualPremium, 0);
+  const totalLow = lines.reduce((acc, l) => acc + l.low, 0);
+  const totalHigh = lines.reduce((acc, l) => acc + l.high, 0);
+  const validUntil = new Date();
+  validUntil.setDate(validUntil.getDate() + 14);
+
+  return {
+    id: `Q-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+    leadId: lead.id,
+    createdAt: new Date().toISOString(),
+    validUntil: validUntil.toISOString(),
+    currency: "GBP",
+    confidence,
+    lines,
+    totalAnnualPremium: total,
+    totalMonthlyPremium: Math.round(total / 12),
+    totalLow,
+    totalHigh,
+  };
+}

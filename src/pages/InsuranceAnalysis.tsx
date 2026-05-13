@@ -23,6 +23,7 @@ import { downloadReport, buildMailto, reportToMarkdown } from "@/lib/reportExpor
 import { runAutopilot, reviewUploadedDocument, type AutopilotResult } from "@/lib/workflow";
 import { logActivity } from "@/lib/activity";
 import { AutopilotPanel } from "@/components/AutopilotPanel";
+import { UkQuickStart } from "@/components/UkQuickStart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -95,28 +96,29 @@ export default function InsuranceAnalysis() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    const r = generateReport(values as AnalysisInput);
+  const runFlow = (input: AnalysisInput, r: Report) => {
     setReport(r);
     setRestored(false);
-
-    // Hand off to the autonomous workflow: lead → quote → meeting → emails → renewal.
-    const result = runAutopilot(values as AnalysisInput, r);
+    const result = runAutopilot(input, r);
     setAutopilot(result);
-
     try {
       localStorage.setItem(LAST_REPORT_KEY, JSON.stringify(r));
-      localStorage.setItem(LAST_VALUES_KEY, JSON.stringify(values));
+      localStorage.setItem(LAST_VALUES_KEY, JSON.stringify(input));
       localStorage.setItem(LAST_AUTOPILOT_KEY, JSON.stringify(result));
     } catch {
       // localStorage may be unavailable; ignore.
     }
-    setLoading(false);
     setTimeout(() => {
       document.getElementById("report")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
+  };
+
+  const onSubmit = async (values: FormValues) => {
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 900));
+    const r = generateReport(values as AnalysisInput);
+    runFlow(values as AnalysisInput, r);
+    setLoading(false);
   };
 
   const reset = () => {
@@ -153,8 +155,26 @@ export default function InsuranceAnalysis() {
         </div>
       </section>
 
+      {/* UK quick start */}
+      <section className="pt-12">
+        <div className="container-atlas">
+          <UkQuickStart
+            onRefined={({ input, report: r }) => {
+              runFlow(input, r);
+              toast.success("Got it — running full Momo Autopilot.");
+            }}
+          />
+          <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            Not in the UK, or want the full intake?
+            <a href="#full-form" className="underline text-ink">Use the full form</a>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+        </div>
+      </section>
+
       {/* Form */}
-      <section className="section">
+      <section id="full-form" className="section">
         <div className="container-atlas grid lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8">
             <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-2xl border border-border bg-card p-8 md:p-10 shadow-card">
