@@ -1,0 +1,14 @@
+# Local model + data state — never commit these.
+data/
+models/
+cache/
+
+# Python venv + bytecode + tooling
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
