@@ -54,7 +54,7 @@ function read(): Lead[] {
 
 function write(leads: Lead[]) {
   localStorage.setItem(KEY, JSON.stringify(leads));
-  window.dispatchEvent(new CustomEvent("atlas:leads-updated"));
+  window.dispatchEvent(new CustomEvent("momo:leads-updated"));
 }
 
 export function getLeads(): Lead[] {
