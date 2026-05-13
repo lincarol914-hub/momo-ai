@@ -20,6 +20,10 @@ import {
 import { Disclaimer, Eyebrow, SectionHeader } from "@/components/atlas/Bits";
 import { generateReport, type AnalysisInput, type Report } from "@/lib/analyzer";
 import { downloadReport, buildMailto, reportToMarkdown } from "@/lib/reportExport";
+import { runAutopilot, reviewUploadedDocument, type AutopilotResult } from "@/lib/workflow";
+import { logActivity } from "@/lib/activity";
+import { AutopilotPanel } from "@/components/AutopilotPanel";
+import { UkQuickStart } from "@/components/UkQuickStart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -57,9 +61,11 @@ type FormValues = z.infer<typeof schema>;
 
 const LAST_REPORT_KEY = "momo:lastReport";
 const LAST_VALUES_KEY = "momo:lastValues";
+const LAST_AUTOPILOT_KEY = "momo:lastAutopilot";
 
 export default function InsuranceAnalysis() {
   const [report, setReport] = useState<Report | null>(null);
+  const [autopilot, setAutopilot] = useState<AutopilotResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [restored, setRestored] = useState(false);
 
@@ -77,45 +83,53 @@ export default function InsuranceAnalysis() {
     try {
       const r = localStorage.getItem(LAST_REPORT_KEY);
       const v = localStorage.getItem(LAST_VALUES_KEY);
+      const a = localStorage.getItem(LAST_AUTOPILOT_KEY);
       if (r) {
         setReport(JSON.parse(r));
         setRestored(true);
       }
       if (v) form.reset(JSON.parse(v));
+      if (a) setAutopilot(JSON.parse(a));
     } catch {
       // ignore corrupted storage
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1100));
-    const r = generateReport(values as AnalysisInput);
+  const runFlow = (input: AnalysisInput, r: Report) => {
     setReport(r);
     setRestored(false);
+    const result = runAutopilot(input, r);
+    setAutopilot(result);
     try {
       localStorage.setItem(LAST_REPORT_KEY, JSON.stringify(r));
-      localStorage.setItem(LAST_VALUES_KEY, JSON.stringify(values));
-      const stored = JSON.parse(localStorage.getItem("momo:submissions") || "[]");
-      stored.push({ type: "analysis", values, at: new Date().toISOString() });
-      localStorage.setItem("momo:submissions", JSON.stringify(stored));
+      localStorage.setItem(LAST_VALUES_KEY, JSON.stringify(input));
+      localStorage.setItem(LAST_AUTOPILOT_KEY, JSON.stringify(result));
     } catch {
       // localStorage may be unavailable; ignore.
     }
-    setLoading(false);
     setTimeout(() => {
       document.getElementById("report")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
   };
 
+  const onSubmit = async (values: FormValues) => {
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 900));
+    const r = generateReport(values as AnalysisInput);
+    runFlow(values as AnalysisInput, r);
+    setLoading(false);
+  };
+
   const reset = () => {
     setReport(null);
+    setAutopilot(null);
     setRestored(false);
     form.reset();
     try {
       localStorage.removeItem(LAST_REPORT_KEY);
       localStorage.removeItem(LAST_VALUES_KEY);
+      localStorage.removeItem(LAST_AUTOPILOT_KEY);
     } catch {
       // ignore
     }
@@ -141,8 +155,26 @@ export default function InsuranceAnalysis() {
         </div>
       </section>
 
+      {/* UK quick start */}
+      <section className="pt-12">
+        <div className="container-atlas">
+          <UkQuickStart
+            onRefined={({ input, report: r }) => {
+              runFlow(input, r);
+              toast.success("Got it — running full Momo Autopilot.");
+            }}
+          />
+          <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            Not in the UK, or want the full intake?
+            <a href="#full-form" className="underline text-ink">Use the full form</a>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+        </div>
+      </section>
+
       {/* Form */}
-      <section className="section">
+      <section id="full-form" className="section">
         <div className="container-atlas grid lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8">
             <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-2xl border border-border bg-card p-8 md:p-10 shadow-card">
@@ -249,14 +281,23 @@ export default function InsuranceAnalysis() {
 
       {report && (
         <section id="report" className="section bg-secondary/40 print:bg-paper print:py-0">
-          <div className="container-atlas">
+          <div className="container-atlas space-y-10">
             {restored && (
-              <div className="mb-6 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-ink flex items-center justify-between gap-3 print:hidden">
+              <div className="rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-ink flex items-center justify-between gap-3 print:hidden">
                 <span>We restored your most recent analysis. Run a new one to replace it.</span>
                 <Button variant="ghost" size="sm" onClick={() => setRestored(false)}>Dismiss</Button>
               </div>
             )}
-            <ReportView report={report} onReset={reset} />
+            {autopilot && (
+              <AutopilotPanel
+                result={autopilot}
+                onChange={(next) => {
+                  setAutopilot(next);
+                  try { localStorage.setItem(LAST_AUTOPILOT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+                }}
+              />
+            )}
+            <ReportView report={report} onReset={reset} leadId={autopilot?.lead.id} />
           </div>
         </section>
       )}
@@ -313,7 +354,7 @@ function Toggle({ form, name, label }: { form: any; name: string; label: string 
 
 /* ---------- Report ---------- */
 
-function ReportView({ report, onReset }: { report: Report; onReset: () => void }) {
+function ReportView({ report, onReset, leadId }: { report: Report; onReset: () => void; leadId?: string }) {
   const { snapshot, risks, products, missingInfo, nextSteps, scoring } = report;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number }[]>([]);
@@ -355,7 +396,25 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
     } catch {
       // ignore
     }
-    toast.success(`${files.length} document${files.length === 1 ? "" : "s"} attached. We'll review and follow up.`);
+    if (leadId) {
+      for (const f of files) {
+        const review = reviewUploadedDocument(f.name);
+        logActivity({
+          leadId,
+          type: "document_uploaded",
+          actor: "customer",
+          summary: `Uploaded ${f.name} (${Math.round(f.size / 1024)} KB).`,
+        });
+        logActivity({
+          leadId,
+          type: "document_summarised",
+          actor: "ai",
+          summary: `AI review of ${f.name}: ${review.headline}`,
+          data: { flags: review.flags, gaps: review.gaps },
+        });
+      }
+    }
+    toast.success(`${files.length} document${files.length === 1 ? "" : "s"} attached. Our AI reviewer is processing them.`);
     e.target.value = "";
   };
 

@@ -12,16 +12,31 @@ const NAV = [
   { to: "/contact", label: "Contact" },
 ];
 
-export function AtlasLogo({ className, dark = false }: { className?: string; dark?: boolean }) {
+export function AtlasLogo({
+  className,
+  dark = false,
+  size = "header",
+}: {
+  className?: string;
+  dark?: boolean;
+  size?: "header" | "footer";
+}) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2 group", className)} aria-label="Momo AI">
+    <Link to="/" className={cn("flex items-center gap-2.5 group", className)} aria-label="Momo AI">
       <div className={cn(
-        "h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105",
+        "rounded-xl overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105",
+        size === "footer" ? "h-14 w-14" : "h-10 w-10",
         dark ? "bg-paper" : "bg-paper ring-1 ring-border"
       )}>
         <img src={momoLogo} alt="Momo AI" className="h-full w-full object-cover" />
       </div>
-      <div className={cn("font-display text-[18px] font-semibold tracking-tight leading-none", dark ? "text-paper" : "text-ink")}>
+      <div
+        className={cn(
+          "font-display font-semibold tracking-tight leading-none",
+          size === "footer" ? "text-2xl" : "text-[18px]",
+          dark ? "text-paper" : "text-ink"
+        )}
+      >
         momo<span className="text-accent">.</span>ai
       </div>
     </Link>
@@ -111,7 +126,7 @@ export function Footer() {
       <div className="container-atlas py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2">
-            <AtlasLogo dark />
+            <AtlasLogo dark size="footer" />
             <p className="mt-5 text-sm text-paper/60 max-w-xs leading-relaxed">
               Smarter business insurance. Clearer cover, fairer prices, faster decisions.
             </p>
@@ -123,6 +138,7 @@ export function Footer() {
           <FooterCol title="Company" links={[
             { to: "/about", label: "About" },
             { to: "/contact", label: "Contact" },
+            { to: "/admin", label: "Admin" },
           ]} />
         </div>
         <div className="hairline border-paper/10 mt-14 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-paper/50">
