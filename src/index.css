@@ -23,8 +23,8 @@
     --muted: 32 20% 93%;
     --muted-foreground: 24 8% 38%;
 
-    /* Ember amber accent */
-    --accent: 22 88% 56%;
+    /* Violet signal accent */
+    --accent: 258 90% 66%;
     --accent-foreground: 36 35% 97%;
 
     --destructive: 0 72% 51%;
@@ -35,7 +35,7 @@
 
     --border: 30 16% 87%;
     --input: 30 16% 87%;
-    --ring: 22 88% 56%;
+    --ring: 258 90% 66%;
 
     --radius: 1rem;
 
