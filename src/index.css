@@ -133,3 +133,11 @@
   .section { @apply py-20 md:py-28; }
   .hairline { @apply border-t border-border; }
 }
+
+@media print {
+  header, footer { display: none !important; }
+  body { background: white !important; }
+  .container-atlas { max-width: none; padding: 0; }
+  .section { padding: 0 !important; }
+  a { color: inherit; text-decoration: none; }
+}
