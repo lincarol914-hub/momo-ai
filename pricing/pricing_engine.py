@@ -232,7 +232,22 @@ def _load_mendeley() -> pd.DataFrame:
 
 
 def _load_fema() -> pd.DataFrame:
-    """Load and clean the FEMA NFIP redacted claims dataset."""
+    """Load and clean the FEMA NFIP Redacted Claims V2 dataset.
+
+    The published schema is claims-only (no policy denominator), so:
+    - **Severity** is trained per-claim on ``amountPaidOnBuildingClaim``.
+    - **Frequency** is approximated as the per-ZIP annual claim rate
+      (claims at the ZIP / years of data at the ZIP). Every row in a
+      given ZIP gets that ZIP's rate as its frequency target, which lets
+      the model learn features -> zip-level claim density. To turn that
+      into a per-policy rate at scoring time you need to divide by the
+      number of policies in the ZIP — that calibration constant lives
+      outside this engine (set ``FEMA_FREQ_CALIBRATION`` if you have it).
+    - ``buildingAge`` is derived from ``originalConstructionDate`` and
+      ``yearOfLoss``. FEMA uses a 1492-10-12 sentinel for unknown
+      construction dates; those rows get ``NaN`` and the median band.
+    - Numeric ``occupancyType`` is mapped to residential / commercial / mixed.
+    """
     path = DATA_DIR / "fema_claims.csv"
     if not path.exists():
         raise FileNotFoundError(
@@ -241,35 +256,76 @@ def _load_fema() -> pd.DataFrame:
             "fima-nfip-redacted-claims-v2"
         )
     cols = [
-        "buildingValue",
         "amountPaidOnBuildingClaim",
-        "totalInsurancePremiumOfThePolicy",
+        "buildingPropertyValue",
+        "buildingDamageAmount",
+        "totalBuildingInsuranceCoverage",
         "occupancyType",
+        "ratedFloodZone",
         "yearOfLoss",
-        "numberOfFloors",
-        "buildingAge",
-        "constructionType",
+        "numberOfFloorsInTheInsuredBuilding",
+        "originalConstructionDate",
         "reportedZipCode",
+        "waterDepth",
+        "state",
     ]
     raw = pd.read_csv(path, usecols=lambda c: c in cols, low_memory=False)
     _print_quality(raw, "fema.raw")
 
-    raw = raw[raw["buildingValue"] > 0].copy()
+    raw = raw[
+        raw["buildingPropertyValue"].fillna(0).gt(0)
+        & raw["amountPaidOnBuildingClaim"].fillna(0).gt(0)
+    ].copy()
+
     cap = raw["amountPaidOnBuildingClaim"].quantile(0.99)
     raw["amountPaidOnBuildingClaim"] = raw["amountPaidOnBuildingClaim"].clip(upper=cap)
-    raw["loss_ratio"] = (
-        raw["amountPaidOnBuildingClaim"]
-        / raw["totalInsurancePremiumOfThePolicy"].replace(0, np.nan)
+
+    # ZIP-level annual claim rate as the frequency target.
+    raw["reportedZipCode"] = raw["reportedZipCode"].astype("Int64").astype(str)
+    zip_stats = (
+        raw.groupby("reportedZipCode")["yearOfLoss"]
+        .agg(["min", "max", "count"])
+        .rename(columns={"count": "claims"})
     )
-    # Each FEMA row is a paid claim — approximate exposure as 1 policy-year.
-    raw["years_observed"] = 1
+    zip_stats["years"] = (zip_stats["max"] - zip_stats["min"] + 1).clip(lower=1)
+    zip_stats["rate"] = zip_stats["claims"] / zip_stats["years"]
+    raw = raw.merge(
+        zip_stats[["rate"]], left_on="reportedZipCode", right_index=True, how="left"
+    )
+
+    # buildingAge from originalConstructionDate. Filter the 1492 sentinel.
+    construction_year = pd.to_datetime(
+        raw["originalConstructionDate"], errors="coerce", utc=True
+    ).dt.year
+    construction_year = construction_year.where(construction_year >= 1700)
+    raw["buildingAge"] = (raw["yearOfLoss"] - construction_year).clip(lower=0)
+
+    # Numeric occupancy code -> text. Codes 1-3, 11 are residential;
+    # 4, 6, 12, 14-18 are commercial / non-residential; rest mixed.
+    occ_map = {
+        1: "residential", 2: "residential", 3: "residential", 11: "residential",
+        4: "commercial", 6: "commercial", 12: "commercial", 14: "commercial",
+        15: "commercial", 16: "commercial", 17: "commercial", 18: "commercial",
+    }
+    raw["occupancy_text"] = raw["occupancyType"].map(occ_map).fillna("mixed")
+
+    # Unified training columns.
+    raw["claim_freq"] = raw["rate"].astype(float)
+    raw["claim_sev"] = raw["amountPaidOnBuildingClaim"].astype(float)
     raw["claim_count_home"] = 1
-    raw["claim_amount_home"] = raw["amountPaidOnBuildingClaim"]
-    raw["claim_freq"] = 1.0
-    raw["claim_sev"] = raw["amountPaidOnBuildingClaim"]
-    raw["building_value"] = raw["buildingValue"]
+    raw["claim_amount_home"] = raw["amountPaidOnBuildingClaim"].astype(float)
+    raw["years_observed"] = 1
+    raw["building_value"] = raw["buildingPropertyValue"].astype(float)
     raw["location"] = raw["reportedZipCode"].astype(str)
-    raw["dwelling_type"] = raw["occupancyType"].astype(str)
+    raw["dwelling_type"] = raw["occupancy_text"]
+    raw["numberOfFloors"] = raw["numberOfFloorsInTheInsuredBuilding"]
+    # No constructionType in FEMA — leave the field absent and let the
+    # feature engineer default to masonry.
+
+    # Drop rows where ZIP didn't resolve to a rate, or building age is NaN.
+    raw = raw.dropna(subset=["claim_freq", "claim_sev", "building_value"]).copy()
+    raw["buildingAge"] = raw["buildingAge"].fillna(raw["buildingAge"].median())
+
     _print_quality(raw, "fema.clean")
     return raw
 
@@ -529,12 +585,22 @@ def train_models(df: pd.DataFrame, source: str) -> ModelBundle:
 
 
 def load_or_train() -> ModelBundle:
-    """Load the saved bundle, or train one on Mendeley if none exists."""
+    """Load the saved bundle, or train one from whichever dataset is on disk.
+
+    Preference order: ``mendeley`` first (small + clean), then ``fema``
+    (volume). Raises ``FileNotFoundError`` if neither is present.
+    """
     if BUNDLE_PATH.exists():
         return joblib.load(BUNDLE_PATH)
-    print("No trained bundle found — training on Mendeley.")
-    df = load_data("mendeley")
-    return train_models(df, "mendeley")
+    if (DATA_DIR / "mendeley.csv").exists():
+        print("No trained bundle found — training on Mendeley.")
+        return train_models(load_data("mendeley"), "mendeley")
+    if (DATA_DIR / "fema_claims.csv").exists():
+        print("No trained bundle found — training on FEMA NFIP.")
+        return train_models(load_data("fema"), "fema")
+    raise FileNotFoundError(
+        f"No dataset in {DATA_DIR}. Drop mendeley.csv or fema_claims.csv first."
+    )
 
 
 # --------------------------------------------------------------------------- #

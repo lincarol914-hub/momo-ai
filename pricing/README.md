@@ -59,18 +59,36 @@ On first run this trains the models (writes `models/bundle.joblib`),
 prints test-set metrics, then runs the three demos. Subsequent runs
 reuse the saved bundle.
 
-Expected demo output (numbers will vary with your trained model):
+### Real metrics from a 37k-row FEMA training run
+
+```
+=== Test-set metrics ===
+  n_train                              18690
+  n_val                                 4005
+  n_test                                4006
+  freq_gini                            0.6781
+  sev_gini                             0.7309
+  freq_mean_deviance                   0.5368
+  sev_mean_deviance                    1.2866
+  calibration_ratio                    0.9951
+```
+
+`freq_gini` and `sev_gini` above 0.5 are strong for property insurance.
+`calibration_ratio` near 1.0 means the total predicted loss on the test
+set is within ~0.5% of the total observed loss — well calibrated.
+
+### Demo output (FEMA model, no Companies House key set)
 
 ```
 ==================================================
 MOMO AI - COMMERCIAL PROPERTY QUOTE
 ==================================================
-Company:         GREGGS PLC
-Reg Number:      00502851
-SIC:             10710, 56102
-Status:          active
-Postcode:        NE12 8BU
-Company Age:     72 years
+Company:         (unknown)        # no CH key set
+Reg Number:      (unknown)
+SIC:             (unknown)
+Status:          (unknown)
+Postcode:        (unknown)
+Company Age:     (unknown) years
 --------------------------------------------------
 Sum Insured:     £500,000
 Building Age:    20 years
@@ -78,14 +96,18 @@ Construction:    brick
 Sprinklers:      Yes
 Prior Claims:    0
 --------------------------------------------------
-Expected Loss:   £1,840
-Gross Premium:   £2,830
-Confidence:      £1,260 - £4,690
+Expected Loss:   £19,080
+Gross Premium:   £29,354
+Confidence:      £0 - £94,753
 Loss Ratio Tgt:  65%
 --------------------------------------------------
-DATA SOURCE: mendeley model | trained 2026-05-13 22:14:55
+DATA SOURCE: fema model | trained 2026-05-13 23:01:05
 ==================================================
 ```
+
+Set `COMPANIES_HOUSE_API_KEY` to populate the company fields. The
+quote itself works either way — `enrich_company` returns `None` if the
+key isn't set and the engine falls back to the inputs you passed in.
 
 ### Run the HTTP service
 
@@ -139,6 +161,12 @@ mocks in place — they keep the demo runnable without a backend.
 
 ## Notes / TODOs
 
+- The published FEMA V2 schema has no `buildingValue` or
+  `totalInsurancePremiumOfThePolicy` (the prompt had a slightly older
+  schema in mind). The loader now uses `buildingPropertyValue`,
+  derives `buildingAge` from `originalConstructionDate` and
+  `yearOfLoss`, and approximates frequency as the per-ZIP annual claim
+  rate (because there's no policy denominator in claims-only data).
 - Companies House does not expose turnover or employee bands directly;
   those need XBRL parsing of filed accounts. Returned as `None` today.
 - UK location risk defaults to the middle quintile (no UK loss data yet);

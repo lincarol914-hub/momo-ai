@@ -200,28 +200,33 @@ def enrich_company(name_or_number: str) -> Optional[Dict[str, Any]]:
         A dict with ``company_number``, ``company_name``, ``sic_codes``,
         ``postcode``, ``incorporation_date``, ``company_age_years``,
         ``status``, ``last_accounts_date``, ``turnover_estimate`` and
-        ``employee_band``. Returns ``None`` if no match was found.
+        ``employee_band``. Returns ``None`` if no match was found, or if
+        the API key isn't set (so callers degrade gracefully).
     """
     query = (name_or_number or "").strip()
     if not query:
         return None
 
-    if _is_company_number(query):
-        number = query.upper()
-    else:
-        number = _search_top(query)
-        if not number:
-            print(f"[companies_house] no search result for {query!r}")
+    try:
+        if _is_company_number(query):
+            number = query.upper()
+        else:
+            number = _search_top(query)
+            if not number:
+                print(f"[companies_house] no search result for {query!r}")
+                return None
+
+        cached = _read_cache(number)
+        if cached is not None:
+            return _format_profile(cached["profile"], cached.get("accounts"))
+
+        profile = _profile(number)
+        if not profile:
+            print(f"[companies_house] no profile for {number}")
             return None
-
-    cached = _read_cache(number)
-    if cached is not None:
-        return _format_profile(cached["profile"], cached.get("accounts"))
-
-    profile = _profile(number)
-    if not profile:
-        print(f"[companies_house] no profile for {number}")
+        accounts = _accounts_history(number)
+        _write_cache(number, {"profile": profile, "accounts": accounts})
+        return _format_profile(profile, accounts)
+    except CompaniesHouseError as exc:
+        print(f"[companies_house] skipping enrichment: {exc}")
         return None
-    accounts = _accounts_history(number)
-    _write_cache(number, {"profile": profile, "accounts": accounts})
-    return _format_profile(profile, accounts)
