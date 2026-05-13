@@ -8,29 +8,28 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-navy-deep text-paper">
-        <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute -top-40 -right-40 h-[560px] w-[560px] rounded-full bg-accent/25 blur-[160px] pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-paper">
+        <div className="absolute inset-0 bg-grid-light opacity-40" />
+        <div className="absolute -top-40 -right-40 h-[560px] w-[560px] rounded-full bg-accent/20 blur-[160px] pointer-events-none" />
         <div className="absolute -bottom-40 -left-40 h-[480px] w-[480px] rounded-full bg-accent/10 blur-[140px] pointer-events-none" />
         <div className="container-atlas relative pt-24 md:pt-32 pb-24 md:pb-32">
-          <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <div className="inline-flex items-center gap-2 rounded-full border border-paper/15 bg-paper/[0.04] px-3 py-1.5 text-xs text-paper/80 backdrop-blur">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
               <Sparkles className="h-3 w-3 text-accent" />
               Business insurance, finally simple
             </div>
-            <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-medium tracking-tight text-balance text-paper">
+            <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-medium tracking-tight text-balance text-ink">
               Cover that
               <br />
               <span className="text-accent italic">actually fits.</span>
             </h1>
-            <p className="mt-7 text-lg md:text-xl text-paper/65 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-7 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               Momo finds the right business insurance for your company in minutes. Clearer cover, fairer prices, no jargon.
             </p>
             <div className="mt-9 flex justify-center">
-              <CTARow dark primaryLabel="Get my analysis" />
+              <CTARow primaryLabel="Get my analysis" />
             </div>
-            <div className="mt-10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs text-paper/50 font-mono">
+            <div className="mt-10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs text-muted-foreground font-mono">
               <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Free, no obligation</span>
               <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> FCA-aware</span>
               <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> Human-reviewed</span>
