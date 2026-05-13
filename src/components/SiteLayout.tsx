@@ -111,7 +111,7 @@ export function Footer() {
   return (
     <footer className="bg-navy-deep text-paper">
       <div className="container-atlas py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2">
             <AtlasLogo dark />
             <p className="mt-5 text-sm text-paper/60 max-w-xs leading-relaxed">
@@ -124,11 +124,6 @@ export function Footer() {
           ]} />
           <FooterCol title="Company" links={[
             { to: "/about", label: "About" },
-            { to: "/broker-owners", label: "Brokers" },
-            { to: "/partners", label: "Partners" },
-            { to: "/investors", label: "Investors" },
-          ]} />
-          <FooterCol title="Contact" links={[
             { to: "/contact", label: "Contact" },
           ]} />
         </div>
