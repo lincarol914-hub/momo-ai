@@ -40,7 +40,7 @@ export interface Lead {
   payload: Record<string, unknown>;
 }
 
-const KEY = "atlas.leads.v1";
+const KEY = "momo.leads.v1";
 
 function read(): Lead[] {
   try {
