@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import momoLogo from "@/assets/momo-logo.jpeg";
 
 const NAV = [
   { to: "/insurance-analysis", label: "Analysis" },
@@ -13,18 +14,15 @@ const NAV = [
 
 export function AtlasLogo({ className, dark = false }: { className?: string; dark?: boolean }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2.5 group", className)}>
+    <Link to="/" className={cn("flex items-center gap-2 group", className)} aria-label="Momo AI">
       <div className={cn(
-        "relative h-9 w-9 rounded-xl flex items-center justify-center overflow-hidden ring-1 transition-transform group-hover:scale-105",
-        dark ? "bg-accent text-paper ring-paper/10" : "bg-ink text-paper ring-ink/10"
+        "h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105",
+        dark ? "bg-paper" : "bg-paper ring-1 ring-border"
       )}>
-        <span className="font-display font-bold text-[16px] leading-none tracking-tight">m</span>
-        <span className="absolute -right-1 -bottom-1 h-2 w-2 rounded-full bg-accent ring-2 ring-background" />
+        <img src={momoLogo} alt="Momo AI" className="h-full w-full object-cover" />
       </div>
-      <div className="leading-none">
-        <div className={cn("font-display text-[18px] font-semibold tracking-tight", dark ? "text-paper" : "text-ink")}>
-          momo<span className="text-accent">.</span>ai
-        </div>
+      <div className={cn("font-display text-[18px] font-semibold tracking-tight leading-none", dark ? "text-paper" : "text-ink")}>
+        momo<span className="text-accent">.</span>ai
       </div>
     </Link>
   );
