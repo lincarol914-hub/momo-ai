@@ -16,7 +16,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { CTARow, Disclaimer, Eyebrow, SectionHeader } from "@/components/atlas/Bits";
 import { generateReport, type AnalysisInput, type Report } from "@/lib/analyzer";
-import { saveLead } from "@/lib/leads";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -68,21 +67,8 @@ export default function InsuranceAnalysis() {
 
   const onSubmit = async (values: FormValues) => {
     setLoading(true);
-    // Simulate analysis time so the UI feels considered
     await new Promise((r) => setTimeout(r, 1100));
     const r = generateReport(values as AnalysisInput);
-
-    saveLead({
-      type: "insurance_analysis",
-      name: values.contactName,
-      company: values.companyName,
-      email: values.email,
-      leadScore: r.scoring.leadScore,
-      urgency: r.scoring.urgency,
-      nextAction: r.scoring.nextAction,
-      payload: { input: values, report: r },
-    });
-
     setReport(r);
     setLoading(false);
     setTimeout(() => {
@@ -389,10 +375,10 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
           <Button variant="outline" onClick={() => toast.success("Report saved. We'll email it shortly.")}>
             <Mail className="h-4 w-4" /> Send Me This Report
           </Button>
-          <Button variant="outline" onClick={() => toast("Document upload is coming soon.", { description: "Placeholder for Momo Risk OS integration." })}>
+          <Button variant="outline" onClick={() => toast("Document upload coming soon.")}>
             <Upload className="h-4 w-4" /> Upload Policy Documents
           </Button>
-          <Button variant="outline" onClick={() => toast("Detailed intake placeholder.", { description: "Will route to Momo Risk OS." })}>
+          <Button variant="outline" onClick={() => toast("Detailed intake coming soon.")}>
             <FileDown className="h-4 w-4" /> Start Detailed Intake
           </Button>
           <Button variant="ghost" onClick={onReset}><RotateCcw className="h-4 w-4" /> Run a new analysis</Button>
