@@ -246,3 +246,13 @@ function Sample({ label, value, accent }: { label: string; value: string; accent
     </div>
   );
 }
+
+function PayTile({ icon: Icon, label, sub, accent }: { icon: React.ComponentType<{className?:string}>; label: string; sub: string; accent?: boolean }) {
+  return (
+    <div className={`rounded-xl border p-4 flex flex-col gap-2 ${accent ? "border-accent/50 bg-accent/5" : "border-border bg-background"}`}>
+      <Icon className={`h-5 w-5 ${accent ? "text-accent" : "text-ink"}`} />
+      <div className="font-display font-semibold text-ink text-sm">{label}</div>
+      <div className="text-[11px] text-muted-foreground font-mono leading-tight">{sub}</div>
+    </div>
+  );
+}
