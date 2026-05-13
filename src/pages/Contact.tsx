@@ -25,6 +25,13 @@ export default function Contact() {
   const form = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = (v: Values) => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("momo:contact") || "[]");
+      stored.push({ ...v, at: new Date().toISOString() });
+      localStorage.setItem("momo:contact", JSON.stringify(stored));
+    } catch {
+      // localStorage may be unavailable; ignore.
+    }
     setDone(true);
     toast.success("Thank you. We have received your message and will reply within 2 working days.");
   };

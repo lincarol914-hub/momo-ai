@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,7 @@ import { z } from "zod";
 import {
   Building2, Globe2, Mail, User, MapPin, Briefcase,
   AlertTriangle, ShieldCheck, ClipboardList, ArrowRight, Sparkles,
-  CheckCircle2, Upload, CalendarCheck, FileDown, RotateCcw,
+  CheckCircle2, Upload, CalendarCheck, FileDown, RotateCcw, FileText, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { CTARow, Disclaimer, Eyebrow, SectionHeader } from "@/components/atlas/Bits";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Disclaimer, Eyebrow, SectionHeader } from "@/components/atlas/Bits";
 import { generateReport, type AnalysisInput, type Report } from "@/lib/analyzer";
+import { downloadReport, buildMailto } from "@/lib/reportExport";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -70,6 +74,13 @@ export default function InsuranceAnalysis() {
     await new Promise((r) => setTimeout(r, 1100));
     const r = generateReport(values as AnalysisInput);
     setReport(r);
+    try {
+      const stored = JSON.parse(localStorage.getItem("momo:submissions") || "[]");
+      stored.push({ type: "analysis", values, at: new Date().toISOString() });
+      localStorage.setItem("momo:submissions", JSON.stringify(stored));
+    } catch {
+      // localStorage may be unavailable; ignore.
+    }
     setLoading(false);
     setTimeout(() => {
       document.getElementById("report")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -269,6 +280,40 @@ function Toggle({ form, name, label }: { form: any; name: string; label: string 
 
 function ReportView({ report, onReset }: { report: Report; onReset: () => void }) {
   const { snapshot, risks, products, missingInfo, nextSteps, scoring } = report;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number }[]>([]);
+  const [intakeOpen, setIntakeOpen] = useState(false);
+
+  const handleSendReport = () => {
+    downloadReport(report);
+    window.location.href = buildMailto(report);
+    toast.success("Report downloaded. Your email client should open with a summary.");
+  };
+
+  const handleUploadClick = () => fileInputRef.current?.click();
+
+  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    const next = files.map((f) => ({ name: f.name, size: f.size }));
+    setUploadedFiles((prev) => [...prev, ...next]);
+    try {
+      const stored = JSON.parse(localStorage.getItem("momo:uploads") || "[]");
+      stored.push({
+        company: snapshot.companyName,
+        files: next,
+        at: new Date().toISOString(),
+      });
+      localStorage.setItem("momo:uploads", JSON.stringify(stored));
+    } catch {
+      // ignore
+    }
+    toast.success(`${files.length} document${files.length === 1 ? "" : "s"} attached. We'll review and follow up.`);
+    e.target.value = "";
+  };
+
+  const removeFile = (name: string) =>
+    setUploadedFiles((prev) => prev.filter((f) => f.name !== name));
 
   return (
     <div className="space-y-10">
@@ -372,18 +417,56 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
       <div className="rounded-2xl border border-border bg-card p-8">
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="atlas"><Link to="/contact"><CalendarCheck className="h-4 w-4" /> Book a Review Call</Link></Button>
-          <Button variant="outline" onClick={() => toast.success("Report saved. We'll email it shortly.")}>
+          <Button variant="outline" onClick={handleSendReport}>
             <Mail className="h-4 w-4" /> Send Me This Report
           </Button>
-          <Button variant="outline" onClick={() => toast("Document upload coming soon.")}>
+          <Button variant="outline" onClick={() => downloadReport(report)}>
+            <FileDown className="h-4 w-4" /> Download Report
+          </Button>
+          <Button variant="outline" onClick={handleUploadClick}>
             <Upload className="h-4 w-4" /> Upload Policy Documents
           </Button>
-          <Button variant="outline" onClick={() => toast("Detailed intake coming soon.")}>
-            <FileDown className="h-4 w-4" /> Start Detailed Intake
+          <Button variant="outline" onClick={() => setIntakeOpen(true)}>
+            <ClipboardList className="h-4 w-4" /> Start Detailed Intake
           </Button>
           <Button variant="ghost" onClick={onReset}><RotateCcw className="h-4 w-4" /> Run a new analysis</Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
+            className="hidden"
+            onChange={handleFiles}
+          />
         </div>
+        {uploadedFiles.length > 0 && (
+          <ul className="mt-5 space-y-1.5">
+            {uploadedFiles.map((f) => (
+              <li key={f.name} className="flex items-center justify-between text-xs rounded-md border border-border bg-background px-3 py-2">
+                <span className="flex items-center gap-2 text-ink truncate">
+                  <FileText className="h-3.5 w-3.5 text-accent shrink-0" />
+                  <span className="truncate">{f.name}</span>
+                  <span className="text-muted-foreground">{(f.size / 1024).toFixed(0)} KB</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeFile(f.name)}
+                  className="text-muted-foreground hover:text-ink"
+                  aria-label={`Remove ${f.name}`}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
+      <DetailedIntakeDialog
+        open={intakeOpen}
+        onOpenChange={setIntakeOpen}
+        companyName={snapshot.companyName}
+      />
 
       <Disclaimer>
         This analysis is informational only and does not constitute insurance advice. Insurance needs vary by
@@ -392,10 +475,118 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
         is taken. AI-generated outputs may be incomplete and should be reviewed.
       </Disclaimer>
 
-      <div className="text-center pt-6">
-        <CTARow primaryLabel="Run another analysis" primaryHref="#top" secondaryHref="/contact" />
+      <div className="flex flex-col sm:flex-row justify-center gap-3 pt-6">
+        <Button variant="atlas" size="lg" onClick={onReset}>
+          <RotateCcw className="h-4 w-4" /> Run another analysis
+        </Button>
+        <Button asChild variant="outline" size="lg">
+          <Link to="/contact">Book a Call</Link>
+        </Button>
       </div>
     </div>
+  );
+}
+
+function DetailedIntakeDialog({
+  open,
+  onOpenChange,
+  companyName,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  companyName: string;
+}) {
+  const [submitting, setSubmitting] = useState(false);
+  const form = useForm({
+    defaultValues: {
+      registrationNumber: "",
+      operatingSince: "",
+      sites: "",
+      payroll: "",
+      claimsHistory: "",
+      currentInsurer: "",
+      currentPremium: "",
+      keyContracts: "",
+      regulators: "",
+      notes: "",
+    },
+  });
+
+  const submit = form.handleSubmit(async (values) => {
+    setSubmitting(true);
+    await new Promise((r) => setTimeout(r, 600));
+    try {
+      const stored = JSON.parse(localStorage.getItem("momo:intake") || "[]");
+      stored.push({ company: companyName, values, at: new Date().toISOString() });
+      localStorage.setItem("momo:intake", JSON.stringify(stored));
+    } catch {
+      // ignore
+    }
+    setSubmitting(false);
+    onOpenChange(false);
+    form.reset();
+    toast.success("Detailed intake submitted. A broker will be in touch within 2 working days.");
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Detailed intake — {companyName}</DialogTitle>
+          <DialogDescription>
+            A few extra details help us prepare a market submission and refine your analysis.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submit} className="grid sm:grid-cols-2 gap-4 mt-2">
+          <div className="space-y-1.5">
+            <Label>Company registration number</Label>
+            <Input {...form.register("registrationNumber")} placeholder="e.g. 12345678" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Trading since</Label>
+            <Input type="number" min={1900} max={new Date().getFullYear()} placeholder="Year" {...form.register("operatingSince")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Number of trading sites</Label>
+            <Input type="number" min={0} {...form.register("sites")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Annual payroll (approx.)</Label>
+            <Input placeholder="£" {...form.register("payroll")} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Claims history (last 5 years)</Label>
+            <Textarea rows={2} placeholder="None / brief description and amounts" {...form.register("claimsHistory")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Current insurer(s)</Label>
+            <Input {...form.register("currentInsurer")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Current annual premium</Label>
+            <Input placeholder="£" {...form.register("currentPremium")} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Key customer contracts with insurance requirements</Label>
+            <Textarea rows={2} {...form.register("keyContracts")} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Regulators / professional bodies</Label>
+            <Input placeholder="e.g. FCA, ICO, SRA" {...form.register("regulators")} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Anything else</Label>
+            <Textarea rows={3} {...form.register("notes")} />
+          </div>
+          <DialogFooter className="sm:col-span-2 mt-2">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>Cancel</Button>
+            <Button type="submit" variant="atlas" disabled={submitting}>
+              {submitting ? "Submitting…" : "Submit detailed intake"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
