@@ -389,10 +389,10 @@ function ReportView({ report, onReset }: { report: Report; onReset: () => void }
           <Button variant="outline" onClick={() => toast.success("Report saved. We'll email it shortly.")}>
             <Mail className="h-4 w-4" /> Send Me This Report
           </Button>
-          <Button variant="outline" onClick={() => toast("Document upload is coming soon.", { description: "Placeholder for Momo Risk OS integration." })}>
+          <Button variant="outline" onClick={() => toast("Document upload coming soon.")}>
             <Upload className="h-4 w-4" /> Upload Policy Documents
           </Button>
-          <Button variant="outline" onClick={() => toast("Detailed intake placeholder.", { description: "Will route to Momo Risk OS." })}>
+          <Button variant="outline" onClick={() => toast("Detailed intake coming soon.")}>
             <FileDown className="h-4 w-4" /> Start Detailed Intake
           </Button>
           <Button variant="ghost" onClick={onReset}><RotateCcw className="h-4 w-4" /> Run a new analysis</Button>
