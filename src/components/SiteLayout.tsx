@@ -125,6 +125,7 @@ export function Footer() {
           <FooterCol title="Company" links={[
             { to: "/about", label: "About" },
             { to: "/contact", label: "Contact" },
+            { to: "/admin", label: "Admin" },
           ]} />
         </div>
         <div className="hairline border-paper/10 mt-14 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-paper/50">
