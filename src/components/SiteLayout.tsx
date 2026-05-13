@@ -21,7 +21,7 @@ export function AtlasLogo({ className, dark = false }: { className?: string; dar
         "relative h-9 w-9 rounded-xl flex items-center justify-center overflow-hidden ring-1 transition-transform group-hover:scale-105",
         dark ? "bg-accent text-paper ring-paper/10" : "bg-ink text-paper ring-ink/10"
       )}>
-        <span className="font-display font-bold text-[16px] leading-none tracking-tight">w</span>
+        <span className="font-display font-bold text-[16px] leading-none tracking-tight">m</span>
         <span className="absolute -right-1 -bottom-1 h-2 w-2 rounded-full bg-accent ring-2 ring-background" />
       </div>
       <div className="leading-none">
