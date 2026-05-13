@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Sparkles, Shield, Zap, Scale, Check } from "lucide-react";
+import { ArrowUpRight, Sparkles, Shield, Zap, Scale, Check, Bitcoin, Wallet, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CTARow, SectionHeader } from "@/components/atlas/Bits";
 import { HeroDashboard } from "@/components/atlas/HeroDashboard";
