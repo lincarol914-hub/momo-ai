@@ -68,6 +68,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* DASHBOARD PREVIEW */}
+      <section className="section pt-0">
+        <div className="container-atlas">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-5">
+              <div className="eyebrow text-muted-foreground">
+                <span className="h-px w-6 bg-muted-foreground/40" />
+                Live picture
+              </div>
+              <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight text-balance">
+                One view of your <span className="text-accent italic">whole insurance stack.</span>
+              </h2>
+              <p className="mt-5 text-lg text-muted-foreground max-w-md">
+                Cover, quotes, renewals and gaps in a single place. No more scattered PDFs or chasing brokers for updates.
+              </p>
+            </div>
+            <div className="lg:col-span-7">
+              <HeroDashboard />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PAYMENTS */}
+      <section className="section pt-0">
+        <div className="container-atlas">
+          <div className="rounded-3xl border border-border bg-card p-10 md:p-14">
+            <div className="grid lg:grid-cols-12 gap-10 items-center">
+              <div className="lg:col-span-7">
+                <div className="eyebrow text-muted-foreground">
+                  <span className="h-px w-6 bg-muted-foreground/40" />
+                  Pay your way
+                </div>
+                <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight">
+                  Card, bank transfer or <span className="text-accent italic">crypto.</span>
+                </h2>
+                <p className="mt-5 text-lg text-muted-foreground max-w-xl">
+                  Settle your premium in pounds, dollars or euros, or pay in Bitcoin, Ethereum or USDC. Same cover, your choice of rails.
+                </p>
+              </div>
+              <div className="lg:col-span-5 grid grid-cols-3 gap-3">
+                <PayTile icon={CreditCard} label="Card" sub="Visa, Mastercard, Amex" />
+                <PayTile icon={Wallet} label="Bank" sub="ACH, SEPA, Faster Payments" />
+                <PayTile icon={Bitcoin} label="Crypto" sub="BTC, ETH, USDC" accent />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* HOW SIMPLE */}
       <section className="section pt-0">
         <div className="container-atlas">
