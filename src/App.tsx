@@ -10,6 +10,7 @@ import Businesses from "./pages/Businesses";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import WatchDemo from "./pages/WatchDemo";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/watch-demo" element={<WatchDemo />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </SiteLayout>

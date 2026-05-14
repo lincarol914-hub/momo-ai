@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import momoLogo from "@/assets/momo-logo-clean.png";
 
 const NAV = [
+  { to: "/watch-demo", label: "Watch Demo" },
   { to: "/insurance-analysis", label: "Analysis" },
   { to: "/businesses", label: "For Businesses" },
   { to: "/about", label: "About" },
