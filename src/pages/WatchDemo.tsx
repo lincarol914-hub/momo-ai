@@ -187,7 +187,7 @@ function PricingBody({ ctx, state }: { ctx: DemoContext; state: StageState }) {
 
 // ---- Stage 4: Quote ready (visual summary) ------------------------------
 async function runQuoteSummary(ctx: DemoContext): Promise<DemoContext> {
-  // Pure visual stage — already have the quote.
+  // Pure visual stage - already have the quote.
   return ctx;
 }
 
@@ -425,7 +425,7 @@ export default function WatchDemo() {
             <Sparkles className="h-3 w-3" /> Watch Momo Autopilot
           </Eyebrow>
           <h1 className="mt-4 font-display text-4xl md:text-5xl text-paper leading-[1.05] max-w-3xl text-balance">
-            From a Companies House number to a bound quote — in seconds.
+            From a Companies House number to a bound quote - in seconds.
           </h1>
           <p className="mt-4 text-paper/65 max-w-2xl">
             Eight steps that would take a broker days, run end-to-end. Watch the recording below,

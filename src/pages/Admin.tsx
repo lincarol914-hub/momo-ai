@@ -413,7 +413,7 @@ function LeadDetail({
                   : policy.payment.type === "bank"
                   ? `Bank ${policy.payment.identifier}`
                   : `${policy.payment.network} ${policy.payment.identifier}`}
-                {" "}— {policy.payment.schedule}
+                {" "}- {policy.payment.schedule}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
