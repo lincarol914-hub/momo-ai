@@ -55,11 +55,32 @@ PRIOR_CLAIMS_CAP = 5
 N_BOOTSTRAP = 100
 DEFAULT_GAMMA_SHAPE = 2.0     # fallback if shape can't be estimated
 
-# Confidence -> extra spread on the price band when inputs are partial.
-# Matches the React side's SPREAD constants in src/lib/pricing.ts so the
-# customer experience is the same whether the quote comes from the in-
-# browser mock or this service.
-CONFIDENCE_SPREAD: Dict[str, float] = {"low": 0.40, "medium": 0.18, "high": 0.05}
+# Confidence -> multiplicative spread around the central premium.
+#
+# Industry-realistic underwriter spreads for commercial property:
+#   * high   (full intake)        ±5%   — firm-quote ballpark
+#   * medium (partial info)       ±12%  — typical indicative quote
+#   * low    (CH-only / no data)  ±25%  — first-pass range
+#
+# This replaces the older approach of using the compound Poisson-Gamma
+# p10/p90 simulation as the price band. That simulation captures
+# OUTCOME variance ("how much might the customer actually lose this
+# year?") not PRICING uncertainty ("how confident are we in the
+# expected premium?"). For property covers, the outcome distribution
+# is dominated by the rare-event nature of claims (most years => £0
+# loss, occasional years => very large loss), which made the
+# customer-facing band misleadingly wide (e.g. £0 — £95k for a £29k
+# premium). We now report the outcome distribution as
+# ``process_variance`` for risk-appetite analysis but quote the price
+# with the tighter parameter-uncertainty band below.
+#
+# Mirrors the SPREAD constants in src/lib/pricing.ts so the React app
+# and this engine agree on the customer-facing range.
+CONFIDENCE_SPREAD: Dict[str, float] = {"low": 0.25, "medium": 0.12, "high": 0.05}
+
+# Floor on the spread — a perfectly calibrated model that received
+# every field would still warrant ±3% to cover underwriter discretion.
+MIN_SPREAD = 0.03
 
 # Defaults used when a property field is not supplied — chosen to be
 # plausible UK SME midpoints, not aggressive in either direction.
@@ -552,10 +573,23 @@ def train_models(df: pd.DataFrame, source: str) -> ModelBundle:
     sev_actual_test = df.loc[sev_test_idx, "claim_sev"].values
     sev_w_test = df.loc[sev_test_idx, "claim_count_home"].values
 
+    # Empirical model-uncertainty proxy for the price band. We measure
+    # how far aggregate predictions drift from aggregate actuals at a
+    # portfolio scale — which is the right granularity for an indicative
+    # price, not single-policy outcome variance. Take the absolute
+    # deviation of the test-set calibration ratio from 1.0, floored
+    # at 1% so a single very-well-calibrated sample doesn't claim
+    # superhuman precision.
+    cal_ratio = float(
+        np.nansum(expected_loss_test) / max(np.nansum(actual_loss_test), 1e-6)
+    )
+    model_relative_error = max(0.01, abs(cal_ratio - 1.0))
+
     metrics: Dict[str, float] = {
         "n_train": float(len(train_idx)),
         "n_val": float(len(val_idx)),
         "n_test": float(len(test_idx)),
+        "model_relative_error": float(model_relative_error),
         "freq_gini": _normalised_gini(
             y_freq.loc[test_idx].values, freq_pred_test, exposure.loc[test_idx].values
         ),
@@ -576,9 +610,7 @@ def train_models(df: pd.DataFrame, source: str) -> ModelBundle:
         ),
         "expected_loss_total": float(np.nansum(expected_loss_test)),
         "actual_loss_total": float(np.nansum(actual_loss_test)),
-        "calibration_ratio": float(
-            np.nansum(expected_loss_test) / max(np.nansum(actual_loss_test), 1e-6)
-        ),
+        "calibration_ratio": cal_ratio,
         "gamma_shape": float(gamma_shape),
     }
 
@@ -695,24 +727,35 @@ def price_policy(
         "profit_load": gross_premium * PROFIT_LOAD,
     }
 
-    # Process variance from the compound Poisson-Gamma bootstrap.
+    # --- Customer-facing price band ----------------------------------
+    # Multiplicative spread on the central premium, sized by how much
+    # we know about the risk. Floor at MIN_SPREAD so even a perfectly-
+    # known risk carries some underwriter discretion.
+    base_spread = max(MIN_SPREAD, CONFIDENCE_SPREAD.get(confidence, 0.05))
+
+    # Add a small empirical model-uncertainty term if the bundle has one
+    # (computed at training time on the holdout set). This makes the band
+    # honest about how good the model itself is — a poorly calibrated
+    # model can't claim ±5%. Combined in quadrature so the contributions
+    # don't double-count.
+    model_rel_err = float(bundle.metrics.get("model_relative_error", 0.0))
+    spread = float(np.sqrt(base_spread ** 2 + model_rel_err ** 2))
+
+    band_low = max(0.0, gross_premium * (1.0 - spread))
+    band_high = gross_premium * (1.0 + spread)
+    confidence_band = (band_low, band_high)
+
+    # --- Process variance (informational only) -----------------------
+    # Compound Poisson-Gamma simulation of the annual loss outcome
+    # distribution. Useful for risk appetite / portfolio aggregation;
+    # not what the customer sees.
     sims = _bootstrap_loss(lam, mu_sev, bundle.gamma_shape, n=N_BOOTSTRAP)
-    process_low = float(np.quantile(sims, 0.10))
-    process_high = float(np.quantile(sims, 0.90))
-
-    # Parameter uncertainty from missing inputs.
-    spread = CONFIDENCE_SPREAD.get(confidence, 0.05)
-    param_low = expected_loss * (1.0 - spread)
-    param_high = expected_loss * (1.0 + spread)
-
-    # Combined band: take the widest of the two on each side, convert
-    # to premium space.
-    band_low_loss = max(0.0, min(process_low, param_low))
-    band_high_loss = max(process_high, param_high)
-    confidence_band = (
-        band_low_loss / max(TARGET_LOSS_RATIO, 1e-6),
-        band_high_loss / max(TARGET_LOSS_RATIO, 1e-6),
-    )
+    process_variance = {
+        "loss_p10": float(np.quantile(sims, 0.10)),
+        "loss_p50": float(np.quantile(sims, 0.50)),
+        "loss_p90": float(np.quantile(sims, 0.90)),
+        "note": "Annual loss outcome distribution — not the price range.",
+    }
 
     return {
         "expected_loss": expected_loss,
@@ -720,6 +763,8 @@ def price_policy(
         "loading_breakdown": loading_breakdown,
         "confidence_band": confidence_band,
         "confidence": confidence,
+        "spread_applied": spread,
+        "process_variance": process_variance,
         "frequency": lam,
         "severity": mu_sev,
         "model_source": bundle.source,
