@@ -416,11 +416,11 @@ export default function WatchDemo() {
 
   return (
     <>
-      {/* Hero / controls */}
+      {/* Hero */}
       <section className="bg-navy-deep text-paper relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero" />
         <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="container-atlas relative py-16 md:py-20">
+        <div className="container-atlas relative py-14 md:py-18">
           <Eyebrow dark>
             <Sparkles className="h-3 w-3" /> Watch Momo Autopilot
           </Eyebrow>
@@ -428,23 +428,61 @@ export default function WatchDemo() {
             From a Companies House number to a bound quote — in seconds.
           </h1>
           <p className="mt-4 text-paper/65 max-w-2xl">
-            Eight steps that would take a broker days, run live below. Press Play to watch Momo
-            look up the company, score the risk, price the cover, book the review, send the
-            confirmation and schedule the renewal reminders.
+            Eight steps that would take a broker days, run end-to-end. Watch the recording below,
+            then run it live yourself with your own Companies House number.
           </p>
+        </div>
+      </section>
 
-          <div className="mt-7 grid md:grid-cols-[1fr_auto_auto] gap-3 max-w-2xl">
+      {/* Recorded walkthrough */}
+      <section className="bg-navy-deep">
+        <div className="container-atlas pb-16">
+          <div className="rounded-2xl overflow-hidden border border-paper/10 shadow-elev bg-black">
+            <video
+              src="/momo-demo.mp4"
+              controls
+              autoPlay
+              muted
+              playsInline
+              preload="metadata"
+              className="w-full aspect-video bg-black"
+            >
+              Your browser can't play this video.
+            </video>
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-paper/55">
+            <Play className="h-3 w-3" /> Recorded walkthrough · 22MB · scroll down to run it live
+          </div>
+        </div>
+      </section>
+
+      {/* Run it live yourself */}
+      <section className="section pt-16">
+        <div className="container-atlas">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+              <Sparkles className="h-3 w-3" /> Run it live
+            </div>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl text-ink leading-tight">
+              Try it with your own Companies House number.
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Eight stages, same lib functions production uses. Pick a speed and press Play.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-5 mb-6 grid md:grid-cols-[1fr_auto_auto] gap-3 max-w-3xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-paper/50" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 value={chNumber}
                 onChange={(e) => setChNumber(e.target.value)}
                 placeholder={SAMPLE_NUMBER}
                 disabled={running}
-                className="pl-9 uppercase bg-paper/[0.06] text-paper border-paper/15 placeholder:text-paper/40"
+                className="pl-9 uppercase"
               />
             </div>
-            <div className="flex items-center gap-1 rounded-md border border-paper/15 bg-paper/[0.05] p-1">
+            <div className="flex items-center gap-1 rounded-md border border-border bg-secondary/40 p-1">
               {SPEEDS.map((s) => (
                 <button
                   key={s.value}
@@ -452,7 +490,7 @@ export default function WatchDemo() {
                   disabled={running}
                   className={cn(
                     "px-3 py-1.5 text-xs rounded transition-colors",
-                    speed === s.value ? "bg-accent text-accent-foreground" : "text-paper/70 hover:text-paper"
+                    speed === s.value ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-ink"
                   )}
                 >
                   {s.label}
@@ -460,25 +498,20 @@ export default function WatchDemo() {
               ))}
             </div>
             {running ? (
-              <Button variant="atlas-outline" size="lg" onClick={reset}>
+              <Button variant="outline" size="lg" onClick={reset}>
                 <RotateCcw className="h-4 w-4" /> Stop
               </Button>
             ) : doneCount === STAGES.length ? (
-              <Button variant="accent" size="lg" onClick={() => { reset(); window.setTimeout(start, 50); }}>
+              <Button variant="atlas" size="lg" onClick={() => { reset(); window.setTimeout(start, 50); }}>
                 <RotateCcw className="h-4 w-4" /> Replay
               </Button>
             ) : (
-              <Button variant="accent" size="lg" onClick={start}>
+              <Button variant="atlas" size="lg" onClick={start}>
                 <Play className="h-4 w-4" /> Play demo
               </Button>
             )}
           </div>
-        </div>
-      </section>
 
-      {/* Stage stack */}
-      <section className="section">
-        <div className="container-atlas">
           <div className="rounded-2xl border border-border bg-card p-4 md:p-6 mb-6 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm">
