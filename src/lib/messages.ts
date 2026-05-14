@@ -47,7 +47,7 @@ export function queueMessage(m: Omit<Message, "id" | "at" | "status"> & { status
   const msg: Message = {
     id: `msg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
     at: new Date().toISOString(),
-    status: m.status ?? "sent", // simulated send — swap with real ESP later
+    status: m.status ?? "sent", // simulated send - swap with real ESP later
     ...m,
   };
   all.unshift(msg);
@@ -63,7 +63,7 @@ export function renderWelcomeWithQuote(lead: Lead, quote: Quote): { subject: str
   const first = lead.contactName.split(" ")[0] || "there";
   const essentials = quote.lines.filter((l) => l.priority === "Essential").slice(0, 4);
   const linesText = essentials
-    .map((l) => `  • ${l.productLabel} — ${formatGBP(l.annualPremium)}/yr (${l.insurer}, limit ${formatGBP(l.limit)})`)
+    .map((l) => `  • ${l.productLabel} - ${formatGBP(l.annualPremium)}/yr (${l.insurer}, limit ${formatGBP(l.limit)})`)
     .join("\n");
 
   return {
@@ -78,7 +78,7 @@ export function renderWelcomeWithQuote(lead: Lead, quote: Quote): { subject: str
       "Essential cover we'd put in place first:",
       linesText || "  • Standard cover for your sector.",
       "",
-      `Quote reference: ${quote.id} — valid until ${new Date(quote.validUntil).toLocaleDateString()}.`,
+      `Quote reference: ${quote.id} - valid until ${new Date(quote.validUntil).toLocaleDateString()}.`,
       "",
       `We've also pencilled in a 30-minute review call to walk you through it (see calendar invite).`,
       "",
@@ -107,7 +107,7 @@ export function renderMeetingConfirmation(lead: Lead, when: Date): { subject: st
 
 export function renderFollowUp(lead: Lead): { subject: string; body: string } {
   return {
-    subject: `Quick nudge — ${lead.companyName}`,
+    subject: `Quick nudge - ${lead.companyName}`,
     body: [
       `Hi ${lead.contactName.split(" ")[0] || "there"},`,
       "",
@@ -122,12 +122,12 @@ export function renderFollowUp(lead: Lead): { subject: string; body: string } {
 
 export function renderRenewalReminder(lead: Lead, renewalDate: Date): { subject: string; body: string } {
   return {
-    subject: `Renewal coming up — ${lead.companyName}`,
+    subject: `Renewal coming up - ${lead.companyName}`,
     body: [
       `Hi ${lead.contactName.split(" ")[0] || "there"},`,
       "",
       `Your renewal is approaching on ${renewalDate.toLocaleDateString()}. We're already preparing your submission so there's no last-minute scramble.`,
-      "You'll get an updated quote two weeks before renewal — reply if there's anything material that's changed.",
+      "You'll get an updated quote two weeks before renewal - reply if there's anything material that's changed.",
       "",
       "Best,",
       "Momo Autopilot",

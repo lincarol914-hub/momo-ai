@@ -161,7 +161,7 @@ export default function InsuranceAnalysis() {
           <UkQuickStart
             onRefined={({ input, report: r }) => {
               runFlow(input, r);
-              toast.success("Got it — running full Momo Autopilot.");
+              toast.success("Got it - running full Momo Autopilot.");
             }}
           />
           <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
@@ -644,7 +644,7 @@ function DetailedIntakeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Detailed intake — {companyName}</DialogTitle>
+          <DialogTitle>Detailed intake - {companyName}</DialogTitle>
           <DialogDescription>
             A few extra details help us prepare a market submission and refine your analysis.
           </DialogDescription>

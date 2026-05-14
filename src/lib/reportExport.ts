@@ -4,7 +4,7 @@ export function reportToMarkdown(report: Report): string {
   const { snapshot, risks, products, missingInfo, nextSteps, scoring } = report;
   const lines: string[] = [];
 
-  lines.push(`# Momo Insurance Analysis — ${snapshot.companyName}`);
+  lines.push(`# Momo Insurance Analysis - ${snapshot.companyName}`);
   lines.push("");
   lines.push(`Generated: ${new Date().toLocaleString()}`);
   lines.push("");
@@ -26,14 +26,14 @@ export function reportToMarkdown(report: Report): string {
   lines.push("");
   lines.push("## Likely risk exposures");
   for (const r of risks) {
-    lines.push(`### ${r.label} — ${r.level}`);
+    lines.push(`### ${r.label} - ${r.level}`);
     lines.push(r.explanation);
     lines.push(`*Missing*: ${r.missing}`);
     lines.push("");
   }
   lines.push("## Recommended insurance products");
   for (const p of products) {
-    lines.push(`### ${p.label} — ${p.priority}`);
+    lines.push(`### ${p.label} - ${p.priority}`);
     lines.push(`${p.why}`);
     lines.push(`*Trigger*: ${p.trigger}`);
     lines.push("");
@@ -67,7 +67,7 @@ export function downloadReport(report: Report) {
 }
 
 export function buildMailto(report: Report, to?: string): string {
-  const subject = `Momo Insurance Analysis — ${report.snapshot.companyName}`;
+  const subject = `Momo Insurance Analysis - ${report.snapshot.companyName}`;
   const body = [
     `Hi,`,
     ``,

@@ -401,9 +401,9 @@ export interface RangedQuote {
 // Industry-realistic underwriter spreads for commercial property
 // indicative quotes. Mirrors pricing_engine.CONFIDENCE_SPREAD so the
 // React app and the Python service quote the same range:
-//   * low    (CH-only / no data)  ±25% — first-pass range
-//   * medium (partial info)       ±12% — typical indicative quote
-//   * high   (full intake)        ±5%  — firm-quote ballpark
+//   * low    (CH-only / no data)  ±25% - first-pass range
+//   * medium (partial info)       ±12% - typical indicative quote
+//   * high   (full intake)        ±5%  - firm-quote ballpark
 // The old ±40% on low conflated outcome variance with pricing
 // uncertainty and produced ranges customers didn't trust.
 const SPREAD: Record<QuoteConfidence, number> = {
