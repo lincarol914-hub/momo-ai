@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "Inter Variable", "ui-sans-serif", "system-ui"],
-        display: ["Inter", "Inter Variable", "ui-sans-serif", "system-ui"],
+        sans: ["Inter Variable", "Inter", "SF Pro Display", "-apple-system", "system-ui", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", "sans-serif"],
+        display: ["Inter Variable", "Inter", "SF Pro Display", "-apple-system", "system-ui", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace"],
       },
       transitionTimingFunction: {
