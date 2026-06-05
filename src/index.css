@@ -4,64 +4,66 @@
 
 @layer base {
   :root {
-    /* Momo AI - cream paper, warm bark, persimmon */
-    --background: 36 32% 97%;
-    --foreground: 25 22% 12%;
+    /* Momo AI - dark minimalist B2B SaaS, premium developer aesthetic */
+    --background: 210 11% 4%;        /* #08090A near-black */
+    --foreground: 180 6% 97%;        /* #F7F8F8 near-white */
 
-    --card: 36 38% 99%;
-    --card-foreground: 25 22% 12%;
+    --card: 210 4% 10%;              /* #18191A dark surface */
+    --card-foreground: 180 6% 97%;
 
-    --popover: 36 38% 99%;
-    --popover-foreground: 25 22% 12%;
+    --popover: 210 4% 10%;
+    --popover-foreground: 180 6% 97%;
 
-    --primary: 25 22% 12%;
-    --primary-foreground: 36 35% 97%;
+    /* Primary CTA - #E5E5E6 background, #08090A text (no gradient) */
+    --primary: 240 3% 90%;           /* #E5E5E6 */
+    --primary-foreground: 210 11% 4%;
 
-    --secondary: 32 26% 92%;
-    --secondary-foreground: 25 22% 12%;
+    --secondary: 210 4% 12%;
+    --secondary-foreground: 180 6% 97%;
 
-    --muted: 32 22% 93%;
-    --muted-foreground: 25 10% 38%;
+    --muted: 210 4% 10%;
+    --muted-foreground: 219 6% 57%;  /* #8A8F98 secondary text */
 
-    /* Persimmon accent (matched to the logo) */
-    --accent: 25 88% 58%;
-    --accent-foreground: 36 35% 97%;
+    /* No color accents - neutral surface used for hovers */
+    --accent: 210 5% 14%;
+    --accent-foreground: 180 6% 97%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 36 35% 97%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 180 6% 97%;
 
-    --success: 152 56% 35%;
-    --warning: 38 92% 50%;
+    --success: 152 24% 50%;
+    --warning: 40 24% 60%;
 
-    --border: 30 18% 87%;
-    --input: 30 18% 87%;
-    --ring: 25 88% 58%;
+    --border: 216 8% 14%;            /* ~ rgba(255,255,255,0.08) on near-black */
+    --input: 216 8% 14%;
+    --ring: 219 6% 57%;
 
-    --radius: 1rem;
+    --radius: 0.375rem;              /* 6px cards */
 
-    /* Surfaces - warm walnut / cream */
-    --navy: 25 24% 14%;
-    --navy-deep: 25 26% 9%;
-    --navy-soft: 25 18% 22%;
-    --paper: 36 35% 97%;
-    --ink: 25 22% 12%;
+    /* Surfaces - monochrome near-black */
+    --navy: 210 4% 10%;
+    --navy-deep: 210 11% 4%;
+    --navy-soft: 210 5% 16%;
+    --paper: 180 6% 97%;             /* near-white text / chips */
+    --ink: 180 6% 97%;               /* near-white primary text */
+    --meta: 218 5% 41%;              /* #62666D meta text */
 
-    /* Gradients */
-    --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, hsl(25 30% 18%) 0%, hsl(25 26% 8%) 60%);
-    --gradient-accent: linear-gradient(135deg, hsl(25 88% 58%), hsl(15 80% 52%));
-    --gradient-paper: linear-gradient(180deg, hsl(36 35% 97%), hsl(32 28% 93%));
+    /* Gradients - monochrome, no color */
+    --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, hsl(210 6% 10%) 0%, hsl(210 11% 4%) 60%);
+    --gradient-accent: linear-gradient(135deg, hsl(240 3% 90%), hsl(220 4% 80%));
+    --gradient-paper: linear-gradient(180deg, hsl(210 11% 4%), hsl(210 7% 6%));
 
-    /* Shadows */
-    --shadow-elev: 0 1px 2px hsl(25 22% 12% / 0.04), 0 12px 32px -10px hsl(25 22% 12% / 0.14);
-    --shadow-card: 0 1px 0 hsl(25 22% 12% / 0.04), 0 1px 3px hsl(25 22% 12% / 0.06);
-    --shadow-glow: 0 0 0 1px hsl(25 88% 58% / 0.25), 0 16px 48px -12px hsl(25 88% 58% / 0.5);
+    /* Shadows - subtle on dark */
+    --shadow-elev: 0 1px 2px hsl(0 0% 0% / 0.4), 0 12px 32px -10px hsl(0 0% 0% / 0.6);
+    --shadow-card: 0 1px 0 hsl(0 0% 0% / 0.3), 0 1px 3px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 0 1px hsl(0 0% 100% / 0.06), 0 16px 48px -12px hsl(0 0% 0% / 0.6);
 
-    /* Type */
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /* Type - Inter Variable */
+    --font-sans: 'Inter', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-display: 'Inter', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 160ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -95,14 +97,27 @@
 }
 
 @layer base {
-  * { @apply border-border; }
+  * {
+    @apply border-border;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
   html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 400;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.025em; font-weight: 500; }
+  /* Headings - Inter weight 510, tight tracking */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 510;
+    font-variation-settings: "wght" 510;
+    letter-spacing: -0.022em;
+  }
+  h3 { letter-spacing: -0.012em; }
   .font-display { font-family: var(--font-display); }
   .font-mono { font-family: var(--font-mono); }
 
@@ -115,8 +130,8 @@
   }
   .bg-grid-light {
     background-image:
-      linear-gradient(to right, hsl(222 47% 11% / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(222 47% 11% / 0.05) 1px, transparent 1px);
+      linear-gradient(to right, hsl(0 0% 100% / 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 100% / 0.03) 1px, transparent 1px);
     background-size: 56px 56px;
   }
 
@@ -129,9 +144,28 @@
 }
 
 @layer components {
-  .container-atlas { @apply max-w-7xl mx-auto px-6 lg:px-10; }
+  /* Page max-width 1364px with ~40px horizontal padding */
+  .container-atlas { @apply max-w-[1364px] mx-auto px-6 lg:px-10; }
   .section { @apply py-20 md:py-28; }
   .hairline { @apply border-t border-border; }
+
+  /* Card thumbnail grid - 3 columns with explicit 64px gutters */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 64px;
+  }
+  @media (max-width: 900px) {
+    .card-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  /* 16:9 card thumbnail, radius 5px */
+  .card-thumb {
+    aspect-ratio: 400 / 225;
+    border-radius: 5px;
+    overflow: hidden;
+    background: hsl(var(--card));
+  }
+  .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
 }
 
 @media print {

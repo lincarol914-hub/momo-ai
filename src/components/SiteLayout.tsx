@@ -38,7 +38,7 @@ export function AtlasLogo({
           dark ? "text-paper" : "text-ink"
         )}
       >
-        momo<span className="text-accent">.</span>ai
+        momo<span className="text-foreground">.</span>ai
       </div>
     </Link>
   );
@@ -46,22 +46,16 @@ export function AtlasLogo({
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const loc = useLocation();
 
   useEffect(() => { setOpen(false); }, [loc.pathname]);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 transition-all",
-      scrolled ? "bg-background/85 backdrop-blur-md border-b border-border" : "bg-transparent"
-    )}>
-      <div className="container-atlas flex items-center justify-between h-16 lg:h-18">
+    <header
+      className="sticky top-0 z-50 bg-background/70 border-b border-white/[0.08]"
+      style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
+    >
+      <div className="container-atlas flex items-center justify-between h-[73px]">
         <AtlasLogo />
         <nav className="hidden lg:flex items-center gap-0.5">
           {NAV.map((n) => (

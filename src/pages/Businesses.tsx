@@ -72,7 +72,7 @@ export default function Businesses() {
               { i: HardHat, t: "Construction" },
             ].map(({ i: Icon, t }) => (
               <div key={t} className="rounded-xl border border-border bg-card p-5 flex flex-col items-start gap-3 hover:shadow-elev transition-shadow">
-                <Icon className="h-5 w-5 text-accent" />
+                <Icon className="h-5 w-5 text-foreground" />
                 <div className="text-sm font-medium text-ink">{t}</div>
               </div>
             ))}

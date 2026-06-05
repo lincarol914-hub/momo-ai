@@ -159,7 +159,7 @@ function BindForm({
           Monthly · {formatGBP(quote.totalMonthlyPremium)}
         </ScheduleTab>
         <ScheduleTab active={schedule === "annual"} onClick={() => setSchedule("annual")}>
-          Annual · {formatGBP(quote.totalAnnualPremium)} <span className="text-accent">save 4%</span>
+          Annual · {formatGBP(quote.totalAnnualPremium)} <span className="text-foreground">save 4%</span>
         </ScheduleTab>
       </div>
 
@@ -233,7 +233,7 @@ function BindForm({
       <div className="mt-6 flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3">
         <div>
           <div className="text-sm font-medium text-ink flex items-center gap-2">
-            <RefreshCw className="h-4 w-4 text-accent" /> Auto-renew at the end of the year
+            <RefreshCw className="h-4 w-4 text-foreground" /> Auto-renew at the end of the year
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
             We'll email you 45, 14 and 1 day before renewal. Cancel any time from those emails.
@@ -377,7 +377,7 @@ function MethodTile({
         selected ? "border-accent bg-accent/5 ring-1 ring-accent/30" : "border-border bg-background hover:border-accent/40"
       )}
     >
-      <Icon className={cn("h-5 w-5", selected ? "text-accent" : "text-ink")} />
+      <Icon className={cn("h-5 w-5", selected ? "text-foreground" : "text-ink")} />
       <div className="mt-2 font-display text-sm text-ink">{label}</div>
       <div className="text-[11px] text-muted-foreground font-mono leading-tight">{sub}</div>
     </button>

@@ -196,7 +196,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                         >
                           <span className={cn(
                             "mt-1 h-2 w-2 rounded-full shrink-0",
-                            l.urgency === "High" ? "bg-destructive" : l.urgency === "Medium" ? "bg-accent" : "bg-success"
+                            l.urgency === "High" ? "bg-destructive" : l.urgency === "Medium" ? "bg-foreground" : "bg-success"
                           )} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2">
@@ -234,7 +234,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 />
               ) : (
                 <div className="rounded-2xl border border-dashed border-border bg-card/50 p-12 text-center">
-                  <Sparkles className="h-6 w-6 text-accent mx-auto" />
+                  <Sparkles className="h-6 w-6 text-foreground mx-auto" />
                   <h2 className="mt-3 font-display text-2xl text-ink">Pick a lead</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     Select a lead on the left to see the AI-generated quote, the full activity timeline, autopilot messages, and the policy / payment state.
@@ -253,7 +253,7 @@ function InsightsBar({ insights }: { insights: ReturnType<typeof pipelineInsight
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
-        <Sparkles className="h-3.5 w-3.5 text-accent" /> AI pipeline insights
+        <Sparkles className="h-3.5 w-3.5 text-foreground" /> AI pipeline insights
       </div>
       <div className="mt-4 grid md:grid-cols-4 gap-4">
         <Stat label="Leads" value={insights.totalLeads.toString()} />
@@ -265,7 +265,7 @@ function InsightsBar({ insights }: { insights: ReturnType<typeof pipelineInsight
         <ul className="mt-5 space-y-1.5">
           {insights.suggestedActions.map((a) => (
             <li key={a} className="flex items-start gap-2 text-sm text-ink">
-              <AlertTriangle className="h-3.5 w-3.5 text-accent mt-0.5 shrink-0" /> {a}
+              <AlertTriangle className="h-3.5 w-3.5 text-foreground mt-0.5 shrink-0" /> {a}
             </li>
           ))}
         </ul>
@@ -449,7 +449,7 @@ function LeadDetail({
       {/* AI follow-up */}
       <div className="p-6 border-b border-border">
         <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-accent" /> AI follow-up
+          <Sparkles className="h-3.5 w-3.5 text-foreground" /> AI follow-up
         </div>
         <p className="mt-2 text-sm text-muted-foreground">Drafted using lead profile, urgency, and the products in the quote.</p>
         <div className="mt-3 rounded-lg bg-secondary/50 p-3 text-xs whitespace-pre-wrap font-mono text-ink max-h-44 overflow-y-auto">
@@ -501,7 +501,7 @@ function LeadDetail({
             <li key={e.id} className="flex items-start gap-3 text-sm">
               <span className={cn(
                 "mt-0.5 h-2 w-2 rounded-full shrink-0",
-                e.actor === "ai" ? "bg-accent" : e.actor === "customer" ? "bg-success" : "bg-ink"
+                e.actor === "ai" ? "bg-foreground" : e.actor === "customer" ? "bg-success" : "bg-ink"
               )} />
               <div>
                 <div className="text-ink">{e.summary}</div>

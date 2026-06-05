@@ -100,7 +100,7 @@ export function AutopilotPanel({
     <div className="rounded-3xl border border-accent/30 bg-gradient-to-b from-accent/[0.06] to-card p-8 md:p-10 shadow-elev">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-foreground">
             <Sparkles className="h-3 w-3" /> Momo Autopilot
           </div>
           <h3 className="mt-4 font-display text-3xl text-ink leading-tight">
@@ -121,7 +121,7 @@ export function AutopilotPanel({
       <ul className="mt-8 grid md:grid-cols-2 gap-3">
         {steps.map((s) => (
           <li key={s.label} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
-            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/10 text-foreground">
               <s.icon className="h-4 w-4" />
             </span>
             <div>

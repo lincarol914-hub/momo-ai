@@ -7,14 +7,20 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
-      screens: { "2xl": "1400px" },
+      padding: "2.5rem",
+      screens: { "2xl": "1364px" },
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui"],
-        display: ["Space Grotesk", "Inter", "ui-sans-serif", "system-ui"],
+        sans: ["Inter", "Inter Variable", "ui-sans-serif", "system-ui"],
+        display: ["Inter", "Inter Variable", "ui-sans-serif", "system-ui"],
         mono: ["JetBrains Mono", "ui-monospace"],
+      },
+      transitionTimingFunction: {
+        smooth: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      },
+      transitionDuration: {
+        smooth: "160ms",
       },
       colors: {
         border: "hsl(var(--border))",

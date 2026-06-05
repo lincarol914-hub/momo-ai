@@ -116,7 +116,7 @@ export function UkQuickStart({
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-foreground">
               <Sparkles className="h-3 w-3" /> UK quick start
             </div>
             <BackendBadge mode={backendMode()} />
@@ -268,7 +268,7 @@ export function UkQuickStart({
           {refineOpen && (
             <div className="mt-5 rounded-xl border border-border bg-secondary/40 p-5">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-accent" />
+                <Sparkles className="h-3.5 w-3.5 text-foreground" />
                 The bits Companies House doesn't give us. These tighten the range to ±5%.
               </div>
               <div className="mt-4 grid sm:grid-cols-2 gap-4">
@@ -332,7 +332,7 @@ function SourcePill({ source }: { source: CompaniesHouseCompany["source"] }) {
       : "Mock data";
   const tone =
     source === "live" ? "bg-success/10 text-success border-success/20"
-      : source === "known" ? "bg-accent/10 text-accent border-accent/30"
+      : source === "known" ? "bg-accent/10 text-foreground border-accent/30"
       : "bg-secondary text-muted-foreground border-border";
   const title =
     source === "live" ? "Pulled live from Companies House through the Momo pricing service."

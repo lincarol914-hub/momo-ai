@@ -59,7 +59,7 @@ export default function WatchDemo() {
         <div className="container-atlas">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <div className="inline-flex flex-wrap items-center justify-center gap-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-foreground">
                 <Sparkles className="h-3 w-3" /> Run it live
               </div>
               {backendMode() === "live" ? (
@@ -132,7 +132,7 @@ export default function WatchDemo() {
           <div className="rounded-2xl border border-border bg-card p-4 md:p-6 mb-6 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm">
-                <Clock className="h-4 w-4 text-accent" />
+                <Clock className="h-4 w-4 text-foreground" />
                 <span className="font-mono text-lg text-ink tabular-nums">
                   {(running ? elapsed : totalDoneSeconds).toFixed(2)}s
                 </span>

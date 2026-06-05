@@ -15,13 +15,13 @@ export default function Home() {
         <div className="container-atlas relative pt-24 md:pt-32 pb-24 md:pb-32">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
-              <Sparkles className="h-3 w-3 text-accent" />
+              <Sparkles className="h-3 w-3 text-foreground" />
               Business insurance, finally simple
             </div>
             <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-medium tracking-tight text-balance text-ink">
               Cover that
               <br />
-              <span className="text-accent italic">actually fits.</span>
+              <span className="text-foreground italic">actually fits.</span>
             </h1>
             <p className="mt-7 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               Momo finds the right business insurance for your company in minutes. Clearer cover, fairer prices, no jargon.
@@ -30,7 +30,7 @@ export default function Home() {
               <CTARow primaryLabel="Get my analysis" />
             </div>
             <div className="mt-10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs text-muted-foreground font-mono">
-              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" /> Free, no obligation</span>
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-foreground animate-pulse" /> Free, no obligation</span>
               <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> FCA-aware</span>
               <span className="flex items-center gap-1.5"><Check className="h-3 w-3" /> Human-reviewed</span>
               <span className="flex items-center gap-1.5"><Bitcoin className="h-3 w-3" /> Pay in crypto or card</span>
@@ -44,7 +44,7 @@ export default function Home() {
         <div className="container-atlas">
           <SectionHeader
             eyebrow="Why Momo"
-            title={<>Insurance that <span className="text-accent italic">works for you.</span></>}
+            title={<>Insurance that <span className="text-foreground italic">works for you.</span></>}
             description="Built for modern businesses who want clarity, speed and cover that genuinely matches their risk."
           />
           <div className="mt-16 grid md:grid-cols-3 gap-5">
@@ -77,7 +77,7 @@ export default function Home() {
                 Live picture
               </div>
               <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight text-balance">
-                One view of your <span className="text-accent italic">whole insurance stack.</span>
+                One view of your <span className="text-foreground italic">whole insurance stack.</span>
               </h2>
               <p className="mt-5 text-lg text-muted-foreground max-w-md">
                 Cover, quotes, renewals and gaps in a single place. No more scattered PDFs or chasing brokers for updates.
@@ -101,7 +101,7 @@ export default function Home() {
                   Pay your way
                 </div>
                 <h2 className="mt-5 font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight">
-                  Card, bank transfer or <span className="text-accent italic">crypto.</span>
+                  Card, bank transfer or <span className="text-foreground italic">crypto.</span>
                 </h2>
                 <p className="mt-5 text-lg text-muted-foreground max-w-xl">
                   Settle your premium in pounds, dollars or euros, or pay in Bitcoin, Ethereum or USDC. Same cover, your choice of rails.
@@ -144,7 +144,7 @@ export default function Home() {
                     "What to ask your current broker",
                   ].map((p) => (
                     <li key={p} className="flex items-center gap-3 text-ink">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/15 text-accent">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/15 text-foreground">
                         <Check className="h-3 w-3" strokeWidth={3} />
                       </span>
                       <span className="text-sm md:text-base">{p}</span>
@@ -160,7 +160,7 @@ export default function Home() {
               <div className="lg:col-span-6">
                 <div className="rounded-2xl border border-border bg-card p-6 shadow-elev">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-                    <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-foreground animate-pulse" />
                     your-company.com
                   </div>
                   <div className="mt-5 space-y-3 text-sm">
@@ -182,7 +182,7 @@ export default function Home() {
         <div className="container-atlas">
           <SectionHeader
             eyebrow="Who we help"
-            title={<>Built for <span className="text-accent italic">modern businesses.</span></>}
+            title={<>Built for <span className="text-foreground italic">modern businesses.</span></>}
             description="From early-stage startups to established firms - if your business is moving fast, your insurance should too."
           />
           <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -193,7 +193,7 @@ export default function Home() {
               { tag: "Professional Services", body: "PI, management liability and cyber done right." },
             ].map((s) => (
               <div key={s.tag} className="group rounded-2xl border border-border bg-card p-6 hover:border-accent/50 hover:shadow-elev transition-all">
-                <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent">{s.tag}</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-foreground">{s.tag}</div>
                 <p className="mt-4 text-ink leading-relaxed">{s.body}</p>
               </div>
             ))}
@@ -210,7 +210,7 @@ export default function Home() {
             <div className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
               <div>
                 <h2 className="font-display text-4xl md:text-5xl text-ink leading-[1.02] tracking-tight max-w-2xl">
-                  Get the right cover. <span className="text-accent italic">In minutes.</span>
+                  Get the right cover. <span className="text-foreground italic">In minutes.</span>
                 </h2>
                 <p className="mt-4 text-muted-foreground max-w-xl">
                   Free analysis. No credit card. No sales call required.
@@ -228,7 +228,7 @@ export default function Home() {
 function ValueCard({ icon: Icon, title, body }: { icon: React.ComponentType<{className?:string}>; title: string; body: string }) {
   return (
     <div className="group relative rounded-2xl border border-border bg-card p-8 shadow-card hover:shadow-elev hover:border-accent/40 hover:-translate-y-0.5 transition-all">
-      <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
+      <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-foreground">
         <Icon className="h-5 w-5" />
       </div>
       <h3 className="mt-6 font-display text-2xl text-ink tracking-tight">{title}</h3>
@@ -241,7 +241,7 @@ function Sample({ label, value, accent }: { label: string; value: string; accent
   return (
     <div className="flex items-center justify-between border-b border-border pb-2.5 last:border-0">
       <span className="text-muted-foreground">{label}</span>
-      <span className={accent ? "text-accent font-semibold font-mono" : "text-ink font-medium font-mono"}>{value}</span>
+      <span className={accent ? "text-foreground font-semibold font-mono" : "text-ink font-medium font-mono"}>{value}</span>
     </div>
   );
 }
@@ -249,7 +249,7 @@ function Sample({ label, value, accent }: { label: string; value: string; accent
 function PayTile({ icon: Icon, label, sub, accent }: { icon: React.ComponentType<{className?:string}>; label: string; sub: string; accent?: boolean }) {
   return (
     <div className={`rounded-xl border p-4 flex flex-col gap-2 ${accent ? "border-accent/50 bg-accent/5" : "border-border bg-background"}`}>
-      <Icon className={`h-5 w-5 ${accent ? "text-accent" : "text-ink"}`} />
+      <Icon className={`h-5 w-5 ${accent ? "text-foreground" : "text-ink"}`} />
       <div className="font-display font-semibold text-ink text-sm">{label}</div>
       <div className="text-[11px] text-muted-foreground font-mono leading-tight">{sub}</div>
     </div>

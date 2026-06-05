@@ -311,7 +311,7 @@ function FieldGroup({ title, icon: Icon, children }: { title: string; icon: Reac
   return (
     <div className="border-t border-border first:border-t-0 first:pt-0 pt-8 mt-8 first:mt-0">
       <div className="flex items-center gap-2 text-sm font-medium text-ink mb-5">
-        <Icon className="h-4 w-4 text-accent" /> {title}
+        <Icon className="h-4 w-4 text-foreground" /> {title}
       </div>
       <div className="grid sm:grid-cols-2 gap-5">{children}</div>
     </div>
@@ -485,7 +485,7 @@ function ReportView({ report, onReset, leadId }: { report: Report; onReset: () =
               </div>
               <p className="mt-2 text-sm text-muted-foreground">{p.why}</p>
               <p className="mt-2 text-xs text-muted-foreground"><span className="text-ink font-medium">Trigger: </span>{p.trigger}</p>
-              <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-accent">
+              <div className="mt-4 pt-4 border-t border-border flex items-center gap-2 text-xs text-foreground">
                 <AlertTriangle className="h-3.5 w-3.5" /> Human review required
               </div>
             </div>
@@ -511,7 +511,7 @@ function ReportView({ report, onReset, leadId }: { report: Report; onReset: () =
           <ol className="mt-6 space-y-3">
             {nextSteps.map((s, i) => (
               <li key={s} className="flex items-start gap-4 rounded-lg border border-border bg-card p-4">
-                <span className="font-mono text-xs text-accent mt-0.5">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-xs text-foreground mt-0.5">{String(i + 1).padStart(2, "0")}</span>
                 <span className="text-sm text-ink">{s}</span>
               </li>
             ))}
@@ -556,7 +556,7 @@ function ReportView({ report, onReset, leadId }: { report: Report; onReset: () =
             {uploadedFiles.map((f) => (
               <li key={f.name} className="flex items-center justify-between text-xs rounded-md border border-border bg-background px-3 py-2">
                 <span className="flex items-center gap-2 text-ink truncate">
-                  <FileText className="h-3.5 w-3.5 text-accent shrink-0" />
+                  <FileText className="h-3.5 w-3.5 text-foreground shrink-0" />
                   <span className="truncate">{f.name}</span>
                   <span className="text-muted-foreground">{(f.size / 1024).toFixed(0)} KB</span>
                 </span>
@@ -728,7 +728,7 @@ function ScoreTile({ label, value, tone, small }: { label: string; value: string
 
 function RiskBadge({ level }: { level: "Low" | "Medium" | "High" }) {
   const cls = level === "High" ? "bg-destructive/10 text-destructive border-destructive/20"
-    : level === "Medium" ? "bg-accent/10 text-accent border-accent/30"
+    : level === "Medium" ? "bg-accent/10 text-foreground border-accent/30"
     : "bg-success/10 text-success border-success/20";
   return <span className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded border font-semibold ${cls}`}>{level}</span>;
 }
