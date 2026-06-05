@@ -450,24 +450,42 @@ function mapBackendCompany(
   };
 }
 
+async function lookupViaUrl(
+  url: string,
+  raw: string
+): Promise<CompaniesHouseCompany | null> {
+  try {
+    const resp = await fetch(url, { headers: { accept: "application/json" } });
+    if (resp.status === 404) return null;
+    if (!resp.ok) return null;
+    const data = (await resp.json()) as BackendCompanyResponse & { error?: string };
+    if (data?.error || !data?.company_number) return null;
+    return mapBackendCompany(raw, data);
+  } catch {
+    return null;
+  }
+}
+
 async function lookupViaBackend(
   raw: string
 ): Promise<CompaniesHouseCompany | null> {
   if (!BACKEND_URL) return null;
-  const url = `${BACKEND_URL}/company/${encodeURIComponent(raw)}`;
-  try {
-    const resp = await fetch(url, { headers: { accept: "application/json" } });
-    if (resp.status === 404) return null;
-    if (!resp.ok) {
-      console.warn(`[companies-house] backend returned ${resp.status}; falling back to mock`);
-      return null;
-    }
-    const data = (await resp.json()) as BackendCompanyResponse;
-    return mapBackendCompany(raw, data);
-  } catch (err) {
-    console.warn("[companies-house] backend call failed; falling back to mock", err);
-    return null;
-  }
+  return lookupViaUrl(
+    `${BACKEND_URL}/company/${encodeURIComponent(raw)}`,
+    raw
+  );
+}
+
+async function lookupViaSameOrigin(
+  raw: string
+): Promise<CompaniesHouseCompany | null> {
+  // Talk to the serverless function (api/company/[id].ts) on the same
+  // origin. Works on Vercel / Netlify / Cloudflare Pages deployments
+  // where the function holds COMPANIES_HOUSE_API_KEY. Silently 404s in
+  // local dev where Vite has no function runtime; that's fine — the
+  // caller falls through to mock.
+  if (typeof window === "undefined") return null;
+  return lookupViaUrl(`/api/company/${encodeURIComponent(raw)}`, raw);
 }
 
 function lookupMock(num: string): CompaniesHouseCompany {
@@ -518,12 +536,16 @@ export async function lookupCompaniesHouse(
     return known;
   }
 
-  // 2. Live backend (Python FastAPI service that calls the real CH API).
+  // 2. Live backend. Two paths, tried in order:
+  //    a) VITE_PRICING_API_URL when explicitly set (dev/Python FastAPI).
+  //    b) Same-origin /api/company/{id} when deployed alongside a
+  //       serverless function (Vercel / Netlify / Cloudflare Pages).
   if (BACKEND_URL) {
     const live = await lookupViaBackend(trimmed);
     if (live) return live;
-    // Fall through to mock on backend failure so the UI still works.
   }
+  const sameOrigin = await lookupViaSameOrigin(trimmed);
+  if (sameOrigin) return sameOrigin;
 
   // 3. Deterministic mock keyed off the normalised number, so any
   //    8-character input still produces something reasonable.

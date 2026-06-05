@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local env files holding API keys (Companies House, etc.).
+.env
+.env.local
+.env.*.local
