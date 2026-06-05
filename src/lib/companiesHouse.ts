@@ -1,10 +1,15 @@
-// Companies House lookup. The real public API at
-// https://api.company-information.service.gov.uk/company/{number}
-// requires HTTP Basic Auth with an API key and must be called server-side
-// (or via your backend proxy) to avoid CORS and key leakage. This module
-// returns mocked-but-deterministic data so the UX is wired today; swap
-// `lookupCompaniesHouse` with a real fetch behind your API once you have
-// a server endpoint.
+// Companies House lookup.
+//
+// Companies House (https://api.company-information.service.gov.uk) requires
+// HTTP Basic Auth with an API key and doesn't send permissive CORS headers,
+// so the browser can't call it directly. It has to go through a server-side
+// proxy — in our case the FastAPI service in pricing/api.py.
+//
+// This module talks to that proxy when VITE_PRICING_API_URL is set in the
+// build env (e.g. .env.local). Without it, it falls back to deterministic
+// mock data so the UI keeps working in standalone demos. ``backendMode()``
+// lets the UI show a "live" / "mocked" badge so it's never ambiguous which
+// path is in use.
 
 export interface CompaniesHouseAddress {
   line1: string;
@@ -31,6 +36,7 @@ export interface CompaniesHouseCompany {
   hasCharges: boolean;
   accountsLastFiled?: string;
   websiteGuess?: string;
+  source: "live" | "mock";
 }
 
 // SIC 2007 → Momo industry bucket. Partial list — covers the most common
@@ -171,13 +177,91 @@ function seededRandom(seed: string): () => number {
   };
 }
 
-export async function lookupCompaniesHouse(raw: string): Promise<CompaniesHouseCompany | null> {
-  const num = normaliseCompanyNumber(raw);
-  if (!isValidCompanyNumberFormat(num)) return null;
+// --- Backend wiring ---
 
-  // Simulate network latency
-  await new Promise((r) => setTimeout(r, 650));
+const BACKEND_URL: string | undefined = (() => {
+  // Vite exposes env vars prefixed with VITE_ via import.meta.env.
+  const raw = (import.meta as unknown as { env?: Record<string, string> }).env
+    ?.VITE_PRICING_API_URL;
+  return raw ? raw.replace(/\/+$/, "") : undefined;
+})();
 
+export function backendMode(): "live" | "mock" {
+  return BACKEND_URL ? "live" : "mock";
+}
+
+interface BackendCompanyResponse {
+  company_number?: string;
+  company_name?: string;
+  sic_codes?: string[];
+  postcode?: string | null;
+  address_line_1?: string | null;
+  locality?: string | null;
+  country?: string | null;
+  incorporation_date?: string | null;
+  status?: string | null;
+  last_accounts_date?: string | null;
+}
+
+function mapBackendCompany(
+  num: string,
+  data: BackendCompanyResponse
+): CompaniesHouseCompany {
+  const sicCodes: CompaniesHouseSic[] = (data.sic_codes || []).map((code) => ({
+    code,
+    description: code,
+  }));
+  const statusRaw = (data.status ?? "").toLowerCase();
+  const status: CompaniesHouseCompany["status"] =
+    statusRaw === "active"
+      ? "active"
+      : statusRaw.includes("dissolv")
+      ? "dissolved"
+      : statusRaw.includes("liquid")
+      ? "liquidation"
+      : "active";
+  return {
+    companyNumber: data.company_number || num,
+    companyName: data.company_name || "(unnamed)",
+    status,
+    companyType: "Private limited company",
+    incorporatedOn: data.incorporation_date || "",
+    registeredAddress: {
+      line1: data.address_line_1 || "",
+      city: data.locality || "",
+      postcode: data.postcode || "",
+      country: data.country || "United Kingdom",
+    },
+    sicCodes,
+    industry: sicToIndustry(sicCodes.map((s) => s.code)),
+    officersCount: 0,
+    hasCharges: false,
+    accountsLastFiled: data.last_accounts_date ?? undefined,
+    source: "live",
+  };
+}
+
+async function lookupViaBackend(
+  raw: string
+): Promise<CompaniesHouseCompany | null> {
+  if (!BACKEND_URL) return null;
+  const url = `${BACKEND_URL}/company/${encodeURIComponent(raw)}`;
+  try {
+    const resp = await fetch(url, { headers: { accept: "application/json" } });
+    if (resp.status === 404) return null;
+    if (!resp.ok) {
+      console.warn(`[companies-house] backend returned ${resp.status}; falling back to mock`);
+      return null;
+    }
+    const data = (await resp.json()) as BackendCompanyResponse;
+    return mapBackendCompany(raw, data);
+  } catch (err) {
+    console.warn("[companies-house] backend call failed; falling back to mock", err);
+    return null;
+  }
+}
+
+function lookupMock(num: string): CompaniesHouseCompany {
   const rand = seededRandom(num);
   const idx = Math.floor(rand() * MOCK_NAMES.length);
   const sicCodes = MOCK_SIC_BUNDLES[idx % MOCK_SIC_BUNDLES.length];
@@ -188,7 +272,6 @@ export async function lookupCompaniesHouse(raw: string): Promise<CompaniesHouseC
     1 + Math.floor(rand() * 28)
   );
   const name = MOCK_NAMES[idx];
-
   return {
     companyNumber: num,
     companyName: name,
@@ -200,7 +283,30 @@ export async function lookupCompaniesHouse(raw: string): Promise<CompaniesHouseC
     industry: sicToIndustry(sicCodes.map((s) => s.code)),
     officersCount: 2 + Math.floor(rand() * 6),
     hasCharges: rand() > 0.7,
-    accountsLastFiled: new Date(incorporatedYear + 1 + Math.floor(rand() * 5), 11, 31).toISOString(),
+    accountsLastFiled: new Date(
+      incorporatedYear + 1 + Math.floor(rand() * 5),
+      11,
+      31
+    ).toISOString(),
     websiteGuess: `${name.toLowerCase().replace(/[^a-z0-9]+/g, "")}.com`,
+    source: "mock",
   };
+}
+
+export async function lookupCompaniesHouse(
+  raw: string
+): Promise<CompaniesHouseCompany | null> {
+  const num = normaliseCompanyNumber(raw);
+  if (!isValidCompanyNumberFormat(num)) return null;
+
+  if (BACKEND_URL) {
+    const live = await lookupViaBackend(num);
+    if (live) return live;
+    // Fall through to mock on backend failure so the UI still works.
+  } else {
+    // Mimic real-network latency so the demo cadence stays consistent.
+    await new Promise((r) => setTimeout(r, 650));
+  }
+
+  return lookupMock(num);
 }

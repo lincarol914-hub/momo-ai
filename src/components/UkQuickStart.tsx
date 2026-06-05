@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
+  backendMode,
   lookupCompaniesHouse,
   isValidCompanyNumberFormat,
   type CompaniesHouseCompany,
@@ -112,8 +113,11 @@ export function UkQuickStart({
     <div className="rounded-2xl border border-accent/30 bg-gradient-to-b from-accent/[0.06] to-card p-6 md:p-8">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-            <Sparkles className="h-3 w-3" /> UK quick start
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+              <Sparkles className="h-3 w-3" /> UK quick start
+            </div>
+            <BackendBadge mode={backendMode()} />
           </div>
           <h2 className="mt-3 font-display text-2xl md:text-3xl text-ink leading-tight">
             Just have your Companies House number?
@@ -298,6 +302,29 @@ function buildPartialInput(co: CompaniesHouseCompany): AnalysisInput {
     usesAI: false,
     hasInsurance: false,
   };
+}
+
+function BackendBadge({ mode }: { mode: "live" | "mock" }) {
+  if (mode === "live") {
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 rounded-full border border-success/40 bg-success/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-success"
+        title="Connected to the Momo pricing service — Companies House lookups go through the real API."
+      >
+        <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+        Live backend
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+      title="No backend URL configured (VITE_PRICING_API_URL). Returning deterministic mock data so the UI keeps working in standalone demos."
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60" />
+      Mock data
+    </span>
+  );
 }
 
 function RefineField({ label, children }: { label: string; children: React.ReactNode }) {

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eyebrow } from "@/components/atlas/Bits";
 import {
+  backendMode,
   lookupCompaniesHouse,
   type CompaniesHouseCompany,
 } from "@/lib/companiesHouse";
@@ -460,8 +461,27 @@ export default function WatchDemo() {
       <section className="section pt-16">
         <div className="container-atlas">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-              <Sparkles className="h-3 w-3" /> Run it live
+            <div className="inline-flex flex-wrap items-center justify-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+                <Sparkles className="h-3 w-3" /> Run it live
+              </div>
+              {backendMode() === "live" ? (
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full border border-success/40 bg-success/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-success"
+                  title="Connected to the Momo pricing service."
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+                  Live backend
+                </span>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+                  title="Set VITE_PRICING_API_URL and run the pricing service for live lookups."
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60" />
+                  Mock data
+                </span>
+              )}
             </div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl text-ink leading-tight">
               Try it with your own Companies House number.
