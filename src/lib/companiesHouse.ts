@@ -36,7 +36,16 @@ export interface CompaniesHouseCompany {
   hasCharges: boolean;
   accountsLastFiled?: string;
   websiteGuess?: string;
-  source: "live" | "mock";
+  /**
+   * Where the record came from:
+   * - "known" - hand-curated record for a well-known UK company so demos
+   *   show real-looking data without a backend.
+   * - "live"  - fetched through the VITE_PRICING_API_URL pricing service,
+   *   which calls the real Companies House API.
+   * - "mock"  - deterministic synthetic data; we couldn't resolve the
+   *   number or name from either of the above.
+   */
+  source: "known" | "live" | "mock";
 }
 
 // SIC 2007 → Momo industry bucket. Partial list — covers the most common
@@ -129,6 +138,206 @@ export function normaliseCompanyNumber(raw: string): string {
 export function isValidCompanyNumberFormat(raw: string): boolean {
   // UK Companies House numbers are 8 characters: either 8 digits or 2 letters + 6 digits.
   return /^([A-Z]{2}\d{6}|\d{8})$/.test(normaliseCompanyNumber(raw));
+}
+
+// --- Curated demo companies ---
+//
+// Hand-built records for well-known UK companies so the demo shows
+// real-looking data without needing the live CH backend. Data sourced
+// from the public Companies House register. Every record here is also
+// keyed by lowercased name aliases for free-text search.
+//
+// To extend: add a (number -> CompaniesHouseCompany) entry, then map
+// every alias the user might type to the same number in NAME_ALIASES.
+
+const KNOWN_COMPANIES: Record<string, CompaniesHouseCompany> = {
+  "00502851": {
+    companyNumber: "00502851",
+    companyName: "GREGGS PLC",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "1951-07-27",
+    registeredAddress: {
+      line1: "Greggs House, Quorum Business Park",
+      city: "Newcastle upon Tyne",
+      postcode: "NE12 8BU",
+      country: "United Kingdom",
+    },
+    sicCodes: [
+      { code: "10710", description: "Manufacture of bread; manufacture of fresh pastry goods and cakes" },
+      { code: "56102", description: "Unlicensed restaurants and cafes" },
+    ],
+    industry: "Hospitality",
+    officersCount: 9,
+    hasCharges: false,
+    accountsLastFiled: "2024-12-28",
+    websiteGuess: "greggs.co.uk",
+    source: "known",
+  },
+  "01709784": {
+    companyNumber: "01709784",
+    companyName: "J D WETHERSPOON PLC",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "1983-05-10",
+    registeredAddress: {
+      line1: "Wetherspoon House, Central Park",
+      city: "Watford",
+      postcode: "WD24 4QL",
+      country: "United Kingdom",
+    },
+    sicCodes: [{ code: "56302", description: "Public houses and bars" }],
+    industry: "Hospitality",
+    officersCount: 7,
+    hasCharges: true,
+    accountsLastFiled: "2024-07-28",
+    websiteGuess: "jdwetherspoon.com",
+    source: "known",
+  },
+  "00445790": {
+    companyNumber: "00445790",
+    companyName: "TESCO PLC",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "1947-11-27",
+    registeredAddress: {
+      line1: "Tesco House, Shire Park, Kestrel Way",
+      city: "Welwyn Garden City",
+      postcode: "AL7 1GA",
+      country: "United Kingdom",
+    },
+    sicCodes: [
+      { code: "47110", description: "Retail sale in non-specialised stores with food, beverages or tobacco predominating" },
+    ],
+    industry: "Retail",
+    officersCount: 11,
+    hasCharges: true,
+    accountsLastFiled: "2025-02-22",
+    websiteGuess: "tesco.com",
+    source: "known",
+  },
+  "00185647": {
+    companyNumber: "00185647",
+    companyName: "J SAINSBURY PLC",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "1922-06-14",
+    registeredAddress: {
+      line1: "33 Holborn",
+      city: "London",
+      postcode: "EC1N 2HT",
+      country: "United Kingdom",
+    },
+    sicCodes: [
+      { code: "47110", description: "Retail sale in non-specialised stores with food, beverages or tobacco predominating" },
+    ],
+    industry: "Retail",
+    officersCount: 10,
+    hasCharges: true,
+    accountsLastFiled: "2024-03-02",
+    websiteGuess: "sainsburys.co.uk",
+    source: "known",
+  },
+  "04256886": {
+    companyNumber: "04256886",
+    companyName: "MARKS AND SPENCER GROUP P.L.C.",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "2001-08-23",
+    registeredAddress: {
+      line1: "Waterside House, 35 North Wharf Road",
+      city: "London",
+      postcode: "W2 1NW",
+      country: "United Kingdom",
+    },
+    sicCodes: [
+      { code: "47110", description: "Retail sale in non-specialised stores with food, beverages or tobacco predominating" },
+      { code: "47190", description: "Other retail sale in non-specialised stores" },
+    ],
+    industry: "Retail",
+    officersCount: 12,
+    hasCharges: true,
+    accountsLastFiled: "2024-03-30",
+    websiteGuess: "marksandspencer.com",
+    source: "known",
+  },
+  "00233462": {
+    companyNumber: "00233462",
+    companyName: "JOHN LEWIS PARTNERSHIP PLC",
+    status: "active",
+    companyType: "Public limited company",
+    incorporatedOn: "1928-04-27",
+    registeredAddress: {
+      line1: "171 Victoria Street",
+      city: "London",
+      postcode: "SW1E 5NN",
+      country: "United Kingdom",
+    },
+    sicCodes: [
+      { code: "47190", description: "Other retail sale in non-specialised stores" },
+    ],
+    industry: "Retail",
+    officersCount: 13,
+    hasCharges: false,
+    accountsLastFiled: "2024-01-27",
+    websiteGuess: "johnlewispartnership.co.uk",
+    source: "known",
+  },
+};
+
+// Lower-cased aliases -> CH number. Tweak freely.
+const NAME_ALIASES: Record<string, string> = {
+  greggs: "00502851",
+  "greggs plc": "00502851",
+  wetherspoon: "01709784",
+  wetherspoons: "01709784",
+  spoons: "01709784",
+  "jd wetherspoon": "01709784",
+  "j d wetherspoon": "01709784",
+  "j d wetherspoon plc": "01709784",
+  tesco: "00445790",
+  "tesco plc": "00445790",
+  sainsbury: "00185647",
+  sainsburys: "00185647",
+  "sainsbury's": "00185647",
+  "j sainsbury": "00185647",
+  "m&s": "04256886",
+  "marks and spencer": "04256886",
+  "marks & spencer": "04256886",
+  "john lewis": "00233462",
+  "john lewis partnership": "00233462",
+};
+
+export interface DemoCompanyRef {
+  number: string;
+  name: string;
+}
+
+export function demoCompanies(): DemoCompanyRef[] {
+  return Object.values(KNOWN_COMPANIES).map((c) => ({
+    number: c.companyNumber,
+    name: c.companyName,
+  }));
+}
+
+function lookupKnown(raw: string): CompaniesHouseCompany | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  // Number match (8 chars, alphanumeric).
+  const num = normaliseCompanyNumber(trimmed);
+  if (isValidCompanyNumberFormat(num) && KNOWN_COMPANIES[num]) {
+    return KNOWN_COMPANIES[num];
+  }
+
+  // Name alias match (case-insensitive, ignores extra whitespace).
+  const aliasKey = trimmed.toLowerCase().replace(/\s+/g, " ");
+  const matchedNumber = NAME_ALIASES[aliasKey];
+  if (matchedNumber && KNOWN_COMPANIES[matchedNumber]) {
+    return KNOWN_COMPANIES[matchedNumber];
+  }
+
+  return null;
 }
 
 // --- Mock dataset (deterministic per CH number) ---
@@ -296,17 +505,32 @@ function lookupMock(num: string): CompaniesHouseCompany {
 export async function lookupCompaniesHouse(
   raw: string
 ): Promise<CompaniesHouseCompany | null> {
-  const num = normaliseCompanyNumber(raw);
-  if (!isValidCompanyNumberFormat(num)) return null;
+  const trimmed = (raw || "").trim();
+  if (!trimmed) return null;
 
-  if (BACKEND_URL) {
-    const live = await lookupViaBackend(num);
-    if (live) return live;
-    // Fall through to mock on backend failure so the UI still works.
-  } else {
-    // Mimic real-network latency so the demo cadence stays consistent.
-    await new Promise((r) => setTimeout(r, 650));
+  // 1. Curated well-known companies. Fast path that works without a backend
+  //    so demos return real data for recognisable UK companies (Greggs,
+  //    Wetherspoon, Tesco, ...). Accepts the CH number OR a name alias.
+  const known = lookupKnown(trimmed);
+  if (known) {
+    // Brief await so the UI's loading state still feels realistic.
+    await new Promise((r) => setTimeout(r, 350));
+    return known;
   }
 
+  // 2. Live backend (Python FastAPI service that calls the real CH API).
+  if (BACKEND_URL) {
+    const live = await lookupViaBackend(trimmed);
+    if (live) return live;
+    // Fall through to mock on backend failure so the UI still works.
+  }
+
+  // 3. Deterministic mock keyed off the normalised number, so any
+  //    8-character input still produces something reasonable.
+  const num = normaliseCompanyNumber(trimmed);
+  if (!isValidCompanyNumberFormat(num)) return null;
+  if (!BACKEND_URL) {
+    await new Promise((r) => setTimeout(r, 650));
+  }
   return lookupMock(num);
 }

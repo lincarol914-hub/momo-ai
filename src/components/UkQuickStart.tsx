@@ -11,8 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   backendMode,
+  demoCompanies,
   lookupCompaniesHouse,
-  isValidCompanyNumberFormat,
   type CompaniesHouseCompany,
 } from "@/lib/companiesHouse";
 import { buildRangedQuote, formatGBP, type RangedQuote } from "@/lib/pricing";
@@ -62,17 +62,19 @@ export function UkQuickStart({
     setError(null);
   };
 
-  const lookup = async () => {
+  const lookup = async (override?: string) => {
     setError(null);
-    if (!isValidCompanyNumberFormat(number)) {
-      setError("UK Companies House numbers are 8 characters — 8 digits, or 2 letters + 6 digits (e.g. 12345678 or SC123456).");
+    const query = (override ?? number).trim();
+    if (!query) {
+      setError("Type a Companies House number (e.g. 00502851) or company name (e.g. Greggs).");
       return;
     }
+    if (override) setNumber(override);
     setLoading(true);
     try {
-      const co = await lookupCompaniesHouse(number);
+      const co = await lookupCompaniesHouse(query);
       if (!co) {
-        setError("Couldn't find that company. Double-check the number, or use the full form below.");
+        setError("Couldn't find that company. Try one of the demo numbers below, a valid 8-character CH number (e.g. 12345678 / SC123456), or use the full form.");
         return;
       }
       setCompany(co);
@@ -130,25 +132,43 @@ export function UkQuickStart({
       </div>
 
       {!company && (
-        <div className="mt-6 grid sm:grid-cols-[1fr_auto] gap-3 sm:items-end">
-          <div className="space-y-1.5">
-            <Label>Companies House number</Label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="e.g. 12345678 or SC123456"
-                className="pl-9 uppercase"
-                value={number}
-                onChange={(e) => setNumber(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") lookup(); }}
-              />
+        <>
+          <div className="mt-6 grid sm:grid-cols-[1fr_auto] gap-3 sm:items-end">
+            <div className="space-y-1.5">
+              <Label>Companies House number or company name</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="e.g. 00502851, Greggs, SC123456"
+                  className="pl-9"
+                  value={number}
+                  onChange={(e) => setNumber(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") lookup(); }}
+                />
+              </div>
+              {error && <p className="text-xs text-destructive flex items-start gap-1 mt-1"><AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" /> {error}</p>}
             </div>
-            {error && <p className="text-xs text-destructive flex items-start gap-1 mt-1"><AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" /> {error}</p>}
+            <Button variant="atlas" onClick={() => lookup()} disabled={loading || !number.trim()} className="h-10">
+              {loading ? "Looking up…" : (<>Look up <ArrowRight className="h-4 w-4" /></>)}
+            </Button>
           </div>
-          <Button variant="atlas" onClick={lookup} disabled={loading || !number.trim()} className="h-10">
-            {loading ? "Looking up…" : (<>Look up <ArrowRight className="h-4 w-4" /></>)}
-          </Button>
-        </div>
+
+          <div className="mt-4 flex items-center flex-wrap gap-2">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1">Try one</span>
+            {demoCompanies().map((d) => (
+              <button
+                key={d.number}
+                type="button"
+                onClick={() => lookup(d.number)}
+                disabled={loading}
+                className="text-xs px-2.5 py-1 rounded-full border border-border bg-card hover:border-accent/40 hover:bg-accent/5 transition-colors"
+              >
+                <span className="font-medium text-ink">{d.name}</span>
+                <span className="text-muted-foreground font-mono ml-1.5">{d.number}</span>
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       {company && quote && (
@@ -166,6 +186,7 @@ export function UkQuickStart({
                   <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-secondary text-ink font-mono">
                     {company.companyNumber}
                   </span>
+                  <SourcePill source={company.source} />
                 </div>
                 <div className="mt-2 text-xs text-muted-foreground flex items-center gap-3 flex-wrap">
                   <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Incorporated {new Date(company.incorporatedOn).toLocaleDateString()}</span>
@@ -302,6 +323,32 @@ function buildPartialInput(co: CompaniesHouseCompany): AnalysisInput {
     usesAI: false,
     hasInsurance: false,
   };
+}
+
+function SourcePill({ source }: { source: CompaniesHouseCompany["source"] }) {
+  const label =
+    source === "known" ? "Curated demo data"
+      : source === "live" ? "Companies House (live)"
+      : "Mock data";
+  const tone =
+    source === "live" ? "bg-success/10 text-success border-success/20"
+      : source === "known" ? "bg-accent/10 text-accent border-accent/30"
+      : "bg-secondary text-muted-foreground border-border";
+  const title =
+    source === "live" ? "Pulled live from Companies House through the Momo pricing service."
+      : source === "known" ? "Hand-curated record for a well-known UK company so demos work without a backend. Real CH info, baked into the bundle."
+      : "Synthetic data generated from your input. Set VITE_PRICING_API_URL and run the pricing service for live CH lookups.";
+  return (
+    <span
+      className={cn(
+        "text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded font-semibold border",
+        tone
+      )}
+      title={title}
+    >
+      {label}
+    </span>
+  );
 }
 
 function BackendBadge({ mode }: { mode: "live" | "mock" }) {
