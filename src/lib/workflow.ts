@@ -116,7 +116,7 @@ export function runAutopilot(input: AnalysisInput, report: Report): AutopilotRes
       const remindAt = new Date(renewal.getTime() - 30 * 24 * 60 * 60 * 1000);
       renewalScheduledAt = remindAt.toISOString();
       const renewalEmail = renderRenewalReminder(lead, renewal);
-      // queued — not sent today
+      // queued - not sent today
       messages.push(
         queueMessage({
           leadId: lead.id,
@@ -138,7 +138,7 @@ export function runAutopilot(input: AnalysisInput, report: Report): AutopilotRes
     }
   }
 
-  // 6. Final meeting reminder hook (we'd send 24h before — log the intent)
+  // 6. Final meeting reminder hook (we'd send 24h before - log the intent)
   logActivity({
     leadId: lead.id,
     type: "meeting_reminder_scheduled",
@@ -155,7 +155,7 @@ export function runAutopilot(input: AnalysisInput, report: Report): AutopilotRes
   };
 }
 
-// AI document review — runs when policy docs are uploaded. Mocks a summary
+// AI document review - runs when policy docs are uploaded. Mocks a summary
 // based on filename so the UX behaves like a real reviewer.
 export function reviewUploadedDocument(filename: string): {
   headline: string;
@@ -182,13 +182,13 @@ export function reviewUploadedDocument(filename: string): {
     gaps.push("Confirm investigation costs trigger.");
   }
   if (flags.length === 0) {
-    flags.push("Wording type not identified from filename — full review pending.");
+    flags.push("Wording type not identified from filename - full review pending.");
     gaps.push("Submit document to underwriter for line-by-line review.");
   }
   return { headline, flags, gaps };
 }
 
-// Operator command — re-runs autopilot for an existing lead (e.g. after edits).
+// Operator command - re-runs autopilot for an existing lead (e.g. after edits).
 export function regenerateQuoteForLead(leadId: string): Quote | null {
   const lead = loadLeads().find((l) => l.id === leadId);
   if (!lead) return null;

@@ -189,7 +189,7 @@ export function AutopilotPanel({
         </div>
         <div className="flex items-center justify-between p-5 border-t border-border bg-secondary/40">
           <div className="text-sm text-muted-foreground">
-            Total premium — indicative, subject to underwriter review.
+            Total premium - indicative, subject to underwriter review.
           </div>
           <div className="font-display text-2xl text-ink">{formatGBP(quote.totalAnnualPremium)}<span className="text-base text-muted-foreground">/yr</span></div>
         </div>

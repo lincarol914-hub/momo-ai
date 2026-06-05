@@ -2,7 +2,7 @@ import type { Lead } from "./leads";
 
 // AI-style assistant. Today this is deterministic (templates + heuristics) so it
 // works offline. The function shapes are designed to be swappable with a real
-// model call later — keep the inputs/outputs stable.
+// model call later - keep the inputs/outputs stable.
 
 export interface DraftedEmail {
   subject: string;
@@ -93,7 +93,7 @@ export function pipelineInsights(leads: Lead[]): PipelineInsight {
   }
   if (meetingsBooked > 0) {
     actions.push(
-      `${meetingsBooked} review call${meetingsBooked === 1 ? " is" : "s are"} on the calendar — prep notes the day before.`
+      `${meetingsBooked} review call${meetingsBooked === 1 ? " is" : "s are"} on the calendar - prep notes the day before.`
     );
   }
   const week = 7 * 24 * 60 * 60 * 1000;
@@ -101,7 +101,7 @@ export function pipelineInsights(leads: Lead[]): PipelineInsight {
     (l) => l.status === "contacted" && l.lastContactedAt && Date.now() - Date.parse(l.lastContactedAt) > week
   ).length;
   if (stale > 0) {
-    actions.push(`${stale} contacted lead${stale === 1 ? "" : "s"} haven't replied in over a week — consider a nudge.`);
+    actions.push(`${stale} contacted lead${stale === 1 ? "" : "s"} haven't replied in over a week - consider a nudge.`);
   }
   if (!actions.length && total > 0) actions.push("All leads are on track. Good time to refine intake questions.");
   if (!total) actions.push("No leads yet. Share the analysis page to start capturing prospects.");

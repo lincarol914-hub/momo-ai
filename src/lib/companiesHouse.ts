@@ -48,7 +48,7 @@ export interface CompaniesHouseCompany {
   source: "known" | "live" | "mock";
 }
 
-// SIC 2007 → Momo industry bucket. Partial list — covers the most common
+// SIC 2007 → Momo industry bucket. Partial list - covers the most common
 // codes we'd see on inbound enquiries. Anything unmatched falls through to
 // "Other".
 const SIC_TO_INDUSTRY: Record<string, string> = {

@@ -90,7 +90,7 @@ export function savePaymentMethod(pm: PaymentMethod) {
   }
 }
 
-// --- Validation helpers (kept light — no PCI scope on the client) ---
+// --- Validation helpers (kept light - no PCI scope on the client) ---
 
 export function maskCardNumber(num: string): string {
   const digits = num.replace(/\s+/g, "");
@@ -167,7 +167,7 @@ export function bindPolicy(
     leadId: lead.id,
     type: "policy_issued",
     actor: "ai",
-    summary: `Policy ${policy.id} bound for ${lead.companyName}. Payment via ${payment.type} (${payment.identifier}) — ${payment.schedule}.`,
+    summary: `Policy ${policy.id} bound for ${lead.companyName}. Payment via ${payment.type} (${payment.identifier}) - ${payment.schedule}.`,
     data: { policyId: policy.id, autoRenew: options.autoRenew },
   });
 
@@ -183,10 +183,10 @@ export function bindPolicy(
       `Your cover is active from ${inception.toLocaleDateString()} under policy ${policy.id}.`,
       "",
       `Annual premium: £${quote.totalAnnualPremium.toLocaleString()} (£${monthly.toLocaleString()}/month).`,
-      `Payment: ${payment.type === "card" ? `${payment.network} card ending ${payment.identifier}` : payment.type === "bank" ? `Bank ${payment.identifier}` : `${payment.network} wallet ${payment.identifier}`} — ${payment.schedule}.`,
+      `Payment: ${payment.type === "card" ? `${payment.network} card ending ${payment.identifier}` : payment.type === "bank" ? `Bank ${payment.identifier}` : `${payment.network} wallet ${payment.identifier}`} - ${payment.schedule}.`,
       "",
       options.autoRenew
-        ? `Auto-renewal is ON. We'll email you 45, 14, and 1 day before your renewal on ${renewal.toLocaleDateString()} — you can cancel in one click from any of those emails.`
+        ? `Auto-renewal is ON. We'll email you 45, 14, and 1 day before your renewal on ${renewal.toLocaleDateString()} - you can cancel in one click from any of those emails.`
         : `Auto-renewal is OFF. We'll email you 45 days before your renewal on ${renewal.toLocaleDateString()} to confirm next year.`,
       "",
       "Full policy documents are attached and stored in your Momo file.",
@@ -206,7 +206,7 @@ export function bindPolicy(
       to: lead.email,
       subject:
         days === 1
-          ? `${lead.companyName} · renewing tomorrow — cancel anytime`
+          ? `${lead.companyName} · renewing tomorrow - cancel anytime`
           : `${lead.companyName} · renewal in ${days} days`,
       body: [
         `Hi ${lead.contactName.split(" ")[0] || "there"},`,
@@ -264,7 +264,7 @@ export function cancelAtRenewal(policyId: string, reason?: string): Policy | nul
       "Hi,",
       "",
       `We've turned off auto-renewal for policy ${updated.id}.`,
-      `Your cover stays active until ${new Date(updated.renewalDate).toLocaleDateString()} — no action needed.`,
+      `Your cover stays active until ${new Date(updated.renewalDate).toLocaleDateString()} - no action needed.`,
       "",
       "If this was a mistake, reply to this email and we'll re-enable renewal.",
       "",

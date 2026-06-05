@@ -78,7 +78,7 @@ export function UkQuickStart({
         return;
       }
       setCompany(co);
-      // Build a partial lead for indicative pricing — confidence "low".
+      // Build a partial lead for indicative pricing - confidence "low".
       const partialInput = buildPartialInput(co);
       const partialReport = generateReport(partialInput);
       const partialLead = createLeadFromAnalysis(partialInput, partialReport);
@@ -125,7 +125,7 @@ export function UkQuickStart({
             Just have your Companies House number?
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-xl">
-            We'll pull what we can from Companies House — name, registered address, SIC codes, status — and generate an
+            We'll pull what we can from Companies House - name, registered address, SIC codes, status - and generate an
             indicative price range in seconds. Fill in a few more details to tighten it, or just book a call.
           </p>
         </div>
