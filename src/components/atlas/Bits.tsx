@@ -29,7 +29,7 @@ export function SectionHeader({
     <div className={cn("max-w-3xl", align === "center" && "mx-auto text-center")}>
       {eyebrow && <Eyebrow dark={dark} className={cn(align === "center" && "justify-center")}>{eyebrow}</Eyebrow>}
       <h2 className={cn(
-        "mt-5 font-display text-4xl md:text-5xl font-medium leading-[1.05] text-balance",
+        "mt-5 font-display text-4xl md:text-5xl font-[510] leading-[1.05] text-balance",
         dark ? "text-paper" : "text-ink"
       )}>
         {title}
@@ -91,7 +91,7 @@ export function FeatureCard({
           <Icon className="h-5 w-5" />
         </div>
       )}
-      <h3 className="font-display text-lg font-medium text-ink">{title}</h3>
+      <h3 className="font-display text-lg font-[510] text-ink">{title}</h3>
       <div className="mt-2 text-sm text-muted-foreground leading-relaxed">{children}</div>
     </div>
   );

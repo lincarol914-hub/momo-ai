@@ -33,7 +33,7 @@ export function AtlasLogo({
       </div>
       <div
         className={cn(
-          "font-display font-semibold tracking-tight leading-none",
+          "font-display font-[510] tracking-tight leading-none",
           size === "footer" ? "text-2xl" : "text-[18px]",
           dark ? "text-paper" : "text-ink"
         )}
@@ -64,7 +64,7 @@ export function Header() {
               to={n.to}
               end={n.to === "/"}
               className={({ isActive }) => cn(
-                "px-2.5 py-2 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap",
+                "px-2.5 py-2 text-[13px] font-[510] rounded-md transition-colors whitespace-nowrap",
                 isActive ? "text-ink bg-secondary" : "text-muted-foreground hover:text-ink"
               )}
             >
@@ -94,7 +94,7 @@ export function Header() {
                 end={n.to === "/"}
                 className={({ isActive }) => cn(
                   "px-3 py-2.5 text-base rounded-md",
-                  isActive ? "bg-secondary text-ink font-medium" : "text-muted-foreground"
+                  isActive ? "bg-secondary text-ink font-[510]" : "text-muted-foreground"
                 )}
               >
                 {n.label}

@@ -18,7 +18,7 @@ export default function Home() {
               <Sparkles className="h-3 w-3 text-foreground" />
               Business insurance, finally simple
             </div>
-            <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-medium tracking-tight text-balance text-ink">
+            <h1 className="mt-7 font-display text-5xl md:text-6xl lg:text-[88px] leading-[0.98] font-[510] tracking-tight text-balance text-ink">
               Cover that
               <br />
               <span className="text-foreground italic">actually fits.</span>
@@ -250,7 +250,7 @@ function PayTile({ icon: Icon, label, sub, accent }: { icon: React.ComponentType
   return (
     <div className={`rounded-xl border p-4 flex flex-col gap-2 ${accent ? "border-accent/50 bg-accent/5" : "border-border bg-background"}`}>
       <Icon className={`h-5 w-5 ${accent ? "text-foreground" : "text-ink"}`} />
-      <div className="font-display font-semibold text-ink text-sm">{label}</div>
+      <div className="font-display font-[510] text-ink text-sm">{label}</div>
       <div className="text-[11px] text-muted-foreground font-mono leading-tight">{sub}</div>
     </div>
   );
