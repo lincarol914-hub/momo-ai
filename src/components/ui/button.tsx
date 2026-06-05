@@ -18,7 +18,7 @@ const buttonVariants = cva(
         /* Primary CTA: fully-rounded pill, #E5E5E6 background, #08090A text */
         atlas: "rounded-full bg-primary text-primary-foreground hover:opacity-90",
         accent: "rounded-full bg-primary text-primary-foreground hover:opacity-90",
-        "atlas-outline": "rounded-full border border-black/15 text-foreground bg-transparent hover:bg-black/5",
+        "atlas-outline": "rounded-full border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5",
       },
       size: {
         default: "h-10 px-5 py-2",

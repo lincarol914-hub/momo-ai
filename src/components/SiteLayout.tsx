@@ -52,7 +52,7 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-50 bg-background/70 border-b border-black/[0.08]"
+      className="sticky top-0 z-50 bg-background/70 border-b border-foreground/10"
       style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
     >
       <div className="container-atlas flex items-center justify-between h-[73px]">
