@@ -5,6 +5,8 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Base path for deployment. GitHub Pages (project site) sets VITE_BASE=/momo-ai/
+  base: process.env.VITE_BASE || "/",
   server: {
     host: "::",
     port: 8080,
