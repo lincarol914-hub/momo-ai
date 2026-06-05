@@ -4,59 +4,59 @@
 
 @layer base {
   :root {
-    /* Momo AI - dark minimalist B2B SaaS, premium developer aesthetic */
-    --background: 210 11% 4%;        /* #08090A near-black */
-    --foreground: 180 6% 97%;        /* #F7F8F8 near-white */
+    /* Momo AI - light minimalist B2B SaaS (black/white inverted) */
+    --background: 180 6% 97%;        /* #F7F8F8 near-white */
+    --foreground: 210 11% 4%;        /* #08090A near-black */
 
-    --card: 210 4% 10%;              /* #18191A dark surface */
-    --card-foreground: 180 6% 97%;
+    --card: 0 0% 100%;               /* white surface */
+    --card-foreground: 210 11% 4%;
 
-    --popover: 210 4% 10%;
-    --popover-foreground: 180 6% 97%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 11% 4%;
 
-    /* Primary CTA - #E5E5E6 background, #08090A text (no gradient) */
-    --primary: 240 3% 90%;           /* #E5E5E6 */
-    --primary-foreground: 210 11% 4%;
+    /* Primary CTA - near-black background, near-white text (no gradient) */
+    --primary: 210 11% 4%;           /* #08090A */
+    --primary-foreground: 180 6% 97%;
 
-    --secondary: 210 4% 12%;
-    --secondary-foreground: 180 6% 97%;
+    --secondary: 210 6% 93%;
+    --secondary-foreground: 210 11% 4%;
 
-    --muted: 210 4% 10%;
-    --muted-foreground: 219 6% 57%;  /* #8A8F98 secondary text */
+    --muted: 210 6% 95%;
+    --muted-foreground: 219 6% 42%;  /* secondary text (gray) */
 
     /* No color accents - neutral surface used for hovers */
-    --accent: 210 5% 14%;
-    --accent-foreground: 180 6% 97%;
+    --accent: 210 6% 92%;
+    --accent-foreground: 210 11% 4%;
 
     --destructive: 0 62% 50%;
-    --destructive-foreground: 180 6% 97%;
+    --destructive-foreground: 0 0% 98%;
 
-    --success: 152 24% 50%;
-    --warning: 40 24% 60%;
+    --success: 152 36% 38%;
+    --warning: 40 60% 42%;
 
-    --border: 216 8% 14%;            /* ~ rgba(255,255,255,0.08) on near-black */
-    --input: 216 8% 14%;
-    --ring: 219 6% 57%;
+    --border: 214 10% 89%;           /* ~ rgba(0,0,0,0.08) on near-white */
+    --input: 214 10% 89%;
+    --ring: 219 8% 45%;
 
     --radius: 0.375rem;              /* 6px cards */
 
-    /* Surfaces - monochrome near-black */
-    --navy: 210 4% 10%;
-    --navy-deep: 210 11% 4%;
-    --navy-soft: 210 5% 16%;
-    --paper: 180 6% 97%;             /* near-white text / chips */
-    --ink: 180 6% 97%;               /* near-white primary text */
-    --meta: 218 5% 41%;              /* #62666D meta text */
+    /* Surfaces - monochrome near-white */
+    --navy: 210 6% 93%;
+    --navy-deep: 180 6% 97%;
+    --navy-soft: 210 6% 88%;
+    --paper: 210 11% 4%;             /* near-black text / chips */
+    --ink: 210 11% 4%;               /* near-black primary text */
+    --meta: 218 5% 45%;              /* meta text */
 
     /* Gradients - monochrome, no color */
-    --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, hsl(210 6% 10%) 0%, hsl(210 11% 4%) 60%);
-    --gradient-accent: linear-gradient(135deg, hsl(240 3% 90%), hsl(220 4% 80%));
-    --gradient-paper: linear-gradient(180deg, hsl(210 11% 4%), hsl(210 7% 6%));
+    --gradient-hero: radial-gradient(ellipse 100% 80% at 50% 0%, hsl(210 8% 99%) 0%, hsl(180 6% 95%) 60%);
+    --gradient-accent: linear-gradient(135deg, hsl(210 11% 8%), hsl(210 8% 20%));
+    --gradient-paper: linear-gradient(180deg, hsl(180 6% 98%), hsl(210 6% 95%));
 
-    /* Shadows - subtle on dark */
-    --shadow-elev: 0 1px 2px hsl(0 0% 0% / 0.4), 0 12px 32px -10px hsl(0 0% 0% / 0.6);
-    --shadow-card: 0 1px 0 hsl(0 0% 0% / 0.3), 0 1px 3px hsl(0 0% 0% / 0.4);
-    --shadow-glow: 0 0 0 1px hsl(0 0% 100% / 0.06), 0 16px 48px -12px hsl(0 0% 0% / 0.6);
+    /* Shadows - subtle on light */
+    --shadow-elev: 0 1px 2px hsl(0 0% 0% / 0.06), 0 12px 32px -10px hsl(0 0% 0% / 0.18);
+    --shadow-card: 0 1px 0 hsl(0 0% 0% / 0.04), 0 1px 3px hsl(0 0% 0% / 0.08);
+    --shadow-glow: 0 0 0 1px hsl(0 0% 0% / 0.06), 0 16px 48px -12px hsl(0 0% 0% / 0.18);
 
     /* Type - Inter Variable */
     --font-sans: "Inter Variable", "Inter", "SF Pro Display", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -124,14 +124,14 @@
   /* Subtle grid pattern for hero backgrounds */
   .bg-grid {
     background-image:
-      linear-gradient(to right, hsl(40 33% 98% / 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(40 33% 98% / 0.04) 1px, transparent 1px);
+      linear-gradient(to right, hsl(0 0% 0% / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 0% / 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
   }
   .bg-grid-light {
     background-image:
-      linear-gradient(to right, hsl(0 0% 100% / 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(0 0% 100% / 0.03) 1px, transparent 1px);
+      linear-gradient(to right, hsl(0 0% 0% / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 0% / 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
   }
 
